@@ -39,4 +39,13 @@ public class MaxTest {
         int result = maximum.max(5, 5);
         assertThat(result, is(5));
     }
+/**
+* Максимум из трех чисел.
+*/
+  @Test
+    public void maxFromThree() {
+        Max maximum = new Max();
+        int result = maximum.max(1, 5, 6);
+        assertThat(result, is(6));
+    }
 }

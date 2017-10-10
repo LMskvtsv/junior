@@ -18,4 +18,14 @@ public class Max {
    public int max(int first, int second) {
       return first > second ? first : second;
    }
+/**
+  * Нахождение максимума из 3-х чисел.
+  * @param first первое число
+  * @param second второе число
+  * @param third третье число
+  * @return максимум из 3-х чисел.
+  */
+   public int max(int first, int second, int third) {
+      return max(first, max(second, third));
+   }
 }
