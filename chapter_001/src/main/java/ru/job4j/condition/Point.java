@@ -49,7 +49,6 @@ public class Point {
 * @return находится ли точка на прямой.
 */
   public boolean is(int a, int b) {
-    int result = this.getY() - a * this.getX() - b;
-    return result == 0 ? true : false;
+    return this.getY() == a * this.getX() + b;
  }
 }
