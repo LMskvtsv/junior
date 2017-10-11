@@ -79,9 +79,6 @@ public double area() {
 * @return true  - если треугольник существует.
 */
 private boolean exist(double ab, double ac, double bc) {
-	boolean isABMoreThanOthersSumm = (ab < (ac + bc)) ? true : false;
-	boolean isACMoreThanOthersSumm = (ac < (ab + bc)) ? true : false;
-	boolean isBCMoreThanOthersSumm = (bc < (ab + ac)) ? true : false;
-	return isABMoreThanOthersSumm && isACMoreThanOthersSumm && isBCMoreThanOthersSumm;
-   }
+	return ab < (ac + bc) && ac < (ab + bc) && bc < (ab + ac);
+  }
 }
