@@ -17,8 +17,8 @@ public class PaintTest {
         Paint paint = new Paint();
         String actual = paint.pyramid(3);
         StringBuilder builder = new StringBuilder();
-        builder.append("  ^  " + System.getProperty("line.separator"));
-        builder.append(" ^^^ " + System.getProperty("line.separator"));
+        builder.append("  ^" + System.getProperty("line.separator"));
+        builder.append(" ^^^" + System.getProperty("line.separator"));
         builder.append("^^^^^" + System.getProperty("line.separator"));
         String expected = builder.toString();
         assertThat(actual, is(expected));
@@ -32,7 +32,7 @@ public class PaintTest {
         Paint paint = new Paint();
         String actual = paint.pyramid(2);
         StringBuilder builder = new StringBuilder();
-        builder.append(" ^ " + System.getProperty("line.separator"));
+        builder.append(" ^" + System.getProperty("line.separator"));
         builder.append("^^^" + System.getProperty("line.separator"));
         String expected = builder.toString();
         assertThat(actual, is(expected));

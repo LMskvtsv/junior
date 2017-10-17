@@ -13,23 +13,13 @@ public class Paint {
      */
     public String pyramid(int h) {
         StringBuilder builder = new StringBuilder();
-        int n = 1;
-        for (int i = 0; i < h; i++) {
-            int z = i;
-            while (z < h - 1) {
-                builder.append(" ");
-                z++;
-            }
-
-            for (int j = 0; j < i + n; j++) {
-                builder.append("^");
-            }
-            n = n + 1;
-
-            int x = i;
-            while (x < h - 1) {
-                builder.append(" ");
-                x++;
+        for (int i = 1; i <= h; i++) {
+            for (int j = 0; j < h + (i - 1); j++) {
+                if (j < h - i) {
+                    builder.append(" ");
+                } else {
+                    builder.append("^");
+                }
             }
             builder.append(System.getProperty("line.separator"));
         }
