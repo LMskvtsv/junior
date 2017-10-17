@@ -41,18 +41,10 @@ public class Board {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                if (i % 2 == 0) {
-                    if (j % 2 == 0) {
-                        builder.append("X");
-                    } else {
-                        builder.append(" ");
-                    }
+                if ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)) {
+                    builder.append("X");
                 } else {
-                    if (j % 2 == 0) {
-                        builder.append(" ");
-                    } else {
-                        builder.append("X");
-                    }
+                    builder.append(" ");
                 }
             }
             builder.append(System.getProperty("line.separator"));
