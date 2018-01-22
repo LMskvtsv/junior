@@ -14,23 +14,22 @@ public class ContainsCheck {
      */
     boolean contains(String origin, String sub) {
         boolean result = false;
-        if (sub.length() > origin.length()) {
-            return result;
-        }
-        char[] originArray = origin.toCharArray();
-        char[] subArray = sub.toCharArray();
+        if (sub.length() <= origin.length()) {
+            char[] originArray = origin.toCharArray();
+            char[] subArray = sub.toCharArray();
 
-        for (int i = 0; i < originArray.length; i++) {
-            if (result) {
-                break;
-            }
-            for (int j = 0; j < subArray.length; j++) {
-                if (originArray[i] == subArray[j]) {
-                    i++;
-                    result = true;
-                } else {
-                    result = false;
+            for (int i = 0; i < originArray.length; i++) {
+                if (result) {
                     break;
+                }
+                for (int j = 0; j < subArray.length; j++) {
+                    if (originArray[i] == subArray[j]) {
+                        i++;
+                        result = true;
+                    } else {
+                        result = false;
+                        break;
+                    }
                 }
             }
         }
