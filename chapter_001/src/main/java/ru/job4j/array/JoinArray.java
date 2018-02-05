@@ -19,9 +19,9 @@ public class JoinArray {
         for (int i = 0; i < joinedArray.length; i++) {
             if (firstCounter < array1.length && secondCounter < array2.length) {
                 joinedArray[i] =
-                        (array1[firstCounter] < array2[secondCounter]) ?
-                        array1[firstCounter++] :
-                        array2[secondCounter++];
+                        (array1[firstCounter] < array2[secondCounter])
+                        ? array1[firstCounter++]
+                        : array2[secondCounter++];
             } else if (secondCounter == array2.length && firstCounter < array1.length) {
                 joinedArray[i] = array1[firstCounter++];
             } else if (firstCounter == array1.length && secondCounter < array2.length) {
