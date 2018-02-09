@@ -14,9 +14,9 @@ public class TurnTest {
      */
     @Test
     public void evenNumberOfElements() {
-        int[] a = new int[]{6, 3, 7, 1};
-        Turn t = new Turn();
-        int[] actual = t.back(a);
+        int[] array = new int[]{6, 3, 7, 1};
+        Turn turn = new Turn();
+        int[] actual = turn.back(array);
         int[] expected = new int[]{1, 7, 3, 6};
         assertThat(actual, is(expected));
     }
@@ -26,9 +26,9 @@ public class TurnTest {
      */
     @Test
     public void unevenHeight() {
-        int[] a = new int[]{6, 3, 7, 1, 8};
-        Turn t = new Turn();
-        int[] actual = t.back(a);
+        int[] array = new int[]{6, 3, 7, 1, 8};
+        Turn turn = new Turn();
+        int[] actual = turn.back(array);
         int[] expected = new int[]{8, 1, 7, 3, 6};
         assertThat(actual, is(expected));
     }

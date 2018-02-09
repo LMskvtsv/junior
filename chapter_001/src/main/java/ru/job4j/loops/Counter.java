@@ -12,7 +12,6 @@ public class Counter {
      * @param finish - last number
      * @return int  - sum of even numbers from first to last.
      */
-
     public int add(int start, int finish) {
         int sum = 0;
         for (int i = start; i < finish; i++) {

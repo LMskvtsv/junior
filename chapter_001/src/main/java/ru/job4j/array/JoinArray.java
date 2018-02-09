@@ -14,23 +14,22 @@ public class JoinArray {
      */
     public int[] join(int[] array1, int[] array2) {
         int[] joinedArray = new int[array1.length + array2.length];
-        int firstCounter = 0;
-        int secondCounter = 0;
-        int joinedCounter = 0;
+        int first = 0;
+        int second = 0;
+        int joined = 0;
         for (int i = 0; i < joinedArray.length; i++) {
-            if (firstCounter < array1.length && secondCounter < array2.length) {
+            if (first < array1.length && second < array2.length) {
                 joinedArray[i] =
-                        (array1[firstCounter] < array2[secondCounter])
-                                ? array1[firstCounter++]
-                                : array2[secondCounter++];
-                joinedCounter++;
+                        (array1[first] < array2[second])
+                                ? array1[first++]
+                                : array2[second++];
+                joined++;
             }
         }
-
-        if (secondCounter == array2.length && firstCounter < array1.length) {
-            System.arraycopy(array1, firstCounter, joinedArray, joinedCounter, array1.length - firstCounter);
-        } else if (firstCounter == array1.length && secondCounter < array2.length) {
-            System.arraycopy(array2, secondCounter, joinedArray, joinedCounter, array2.length - secondCounter);
+        if (second == array2.length && first < array1.length) {
+            System.arraycopy(array1, first, joinedArray, joined, array1.length - first);
+        } else if (first == array1.length && second < array2.length) {
+            System.arraycopy(array2, second, joinedArray, joined, array2.length - second);
         }
         return joinedArray;
     }

@@ -15,7 +15,7 @@ public class BoardTest {
     @Test
     public void evenHeight() {
         Board board = new Board();
-        String actual = board.paintWithHint(5, 4);
+        String actual = board.paint(5, 4);
         StringBuilder builder = new StringBuilder();
         builder.append("X X X" + System.getProperty("line.separator"));
         builder.append(" X X " + System.getProperty("line.separator"));
@@ -31,7 +31,7 @@ public class BoardTest {
     @Test
     public void unevenHeight() {
         Board board = new Board();
-        String actual = board.paintWithHint(7, 5);
+        String actual = board.paint(7, 5);
         StringBuilder builder = new StringBuilder();
         builder.append("X X X X" + System.getProperty("line.separator"));
         builder.append(" X X X " + System.getProperty("line.separator"));
@@ -48,7 +48,7 @@ public class BoardTest {
     @Test
     public void evenWidth() {
         Board board = new Board();
-        String actual = board.paintWithHint(4, 5);
+        String actual = board.paint(4, 5);
         String expected = "Width should be uneven!";
         assertThat(actual, is(expected));
     }

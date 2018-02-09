@@ -8,7 +8,7 @@
     <url>http://job4j.ru/</url>
 
     <modules>
-	<module>chapter_001</module>
+	    <module>chapter_001</module>
         <module>chapter_002</module>
     </modules>
 

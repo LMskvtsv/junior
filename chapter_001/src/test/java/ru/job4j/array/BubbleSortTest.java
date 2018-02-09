@@ -14,9 +14,9 @@ public class BubbleSortTest {
      */
     @Test
     public void sort() {
-        int[] a = new int[]{5, 4, 7, 1};
+        int[] array = new int[]{5, 4, 7, 1};
         BubbleSort bs = new BubbleSort();
-        int[] actual = bs.sort(a);
+        int[] actual = bs.sort(array);
         int[] expected = new int[]{1, 4, 5, 7};
         assertThat(actual, is(expected));
     }

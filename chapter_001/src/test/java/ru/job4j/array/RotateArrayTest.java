@@ -14,9 +14,9 @@ public class RotateArrayTest {
      */
     @Test
     public void twoXTwo() {
-        int[][] a = new int[][]{{1, 2}, {3, 4}};
+        int[][] array = new int[][]{{1, 2}, {3, 4}};
         RotateArray ra = new RotateArray();
-        int[][] actual = ra.sort(a);
+        int[][] actual = ra.sort(array);
         int[][] expected = new int[][]{{3, 1}, {4, 2}};
         assertThat(actual, is(expected));
     }
@@ -26,9 +26,9 @@ public class RotateArrayTest {
      */
     @Test
     public void threeXThree() {
-        int[][] a = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        int[][] array = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
         RotateArray ra = new RotateArray();
-        int[][] actual = ra.sort(a);
+        int[][] actual = ra.sort(array);
         int[][] expected = new int[][]{{7, 4, 1}, {8, 5, 2}, {9, 6, 3}};
         assertThat(actual, is(expected));
     }

@@ -17,7 +17,6 @@ public class ContainsCheck {
         if (sub.length() <= origin.length()) {
             char[] originArray = origin.toCharArray();
             char[] subArray = sub.toCharArray();
-
             for (int i = 0; i < originArray.length; i++) {
                 if (result) {
                     break;
