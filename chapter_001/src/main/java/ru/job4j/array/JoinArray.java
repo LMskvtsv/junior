@@ -16,18 +16,23 @@ public class JoinArray {
         int[] joinedArray = new int[array1.length + array2.length];
         int firstCounter = 0;
         int secondCounter = 0;
+        int joinedCounter = 0;
         for (int i = 0; i < joinedArray.length; i++) {
             if (firstCounter < array1.length && secondCounter < array2.length) {
                 joinedArray[i] =
                         (array1[firstCounter] < array2[secondCounter])
-                        ? array1[firstCounter++]
-                        : array2[secondCounter++];
-            } else if (secondCounter == array2.length && firstCounter < array1.length) {
-                joinedArray[i] = array1[firstCounter++];
-            } else if (firstCounter == array1.length && secondCounter < array2.length) {
-                joinedArray[i] = array2[secondCounter++];
+                                ? array1[firstCounter++]
+                                : array2[secondCounter++];
+                joinedCounter++;
             }
+        }
+
+        if (secondCounter == array2.length && firstCounter < array1.length) {
+            System.arraycopy(array1, firstCounter, joinedArray, joinedCounter, array1.length - firstCounter);
+        } else if (firstCounter == array1.length && secondCounter < array2.length) {
+            System.arraycopy(array2, secondCounter, joinedArray, joinedCounter, array2.length - secondCounter);
         }
         return joinedArray;
     }
 }
+
