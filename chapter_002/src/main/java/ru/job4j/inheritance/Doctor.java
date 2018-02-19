@@ -13,7 +13,7 @@ public class Doctor extends Profession {
      */
     private int xp;
     /**
-     * All the knowleges that doctor obtained throughout his learning and experience.
+     * All the knowledge that doctor obtained throughout his learning and experience.
      */
     String knowledge;
 
