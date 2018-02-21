@@ -43,14 +43,18 @@ public class Tracker {
      *
      * @param id   - ай ди заявки которую нужно заменить.
      * @param item - новый айтем на который произойдет замена.
+     * @return true - если была найдена заявка по ай ди, false - если заявки с заданным ай ди не было найдено.
      */
-    public void replace(String id, Item item) {
+    public boolean replace(String id, Item item) {
+        boolean isExist = false;
         for (int i = 0; i < this.items.length; i++) {
-            if (item.getId().equals(items[i].getId())) {
+            if (id.equals(items[i].getId())) {
+                isExist = true;
                 items[i] = item;
                 break;
             }
         }
+        return isExist;
     }
 
     /**
@@ -58,15 +62,18 @@ public class Tracker {
      *
      * @param id - ай ди заявки которую нужно удалить.
      */
-    public void delete(String id) {
+    public boolean delete(String id) {
+        boolean isExist = false;
         for (int i = 0; i < this.items.length; i++) {
             if (id.equals(items[i].getId())) {
+                isExist = true;
                 int start = i + 1;
                 System.arraycopy(items, start, items, i, items.length - start);
                 position--;
                 break;
             }
         }
+        return isExist;
     }
 
     /**
