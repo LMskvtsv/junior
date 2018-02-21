@@ -61,6 +61,7 @@ public class Tracker {
      * Метод удаляет заявку, найденную по id.
      *
      * @param id - ай ди заявки которую нужно удалить.
+     * @return true - если была найдена заявка по ай ди, false - если заявки с заданным ай ди не было найдено.
      */
     public boolean delete(String id) {
         boolean isExist = false;
