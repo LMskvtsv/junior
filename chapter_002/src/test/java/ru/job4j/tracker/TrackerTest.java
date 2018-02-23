@@ -127,7 +127,7 @@ public class TrackerTest {
         tracker.add(item3);
 
         Item[] actual = tracker.findByName("item2");
-        Item[] expected = new Item[tracker.findAll().length];
+        Item[] expected = new Item[1];
         expected[0] = item2;
         assertThat(actual, is(expected));
     }
@@ -144,7 +144,7 @@ public class TrackerTest {
         tracker.add(item3);
 
         Item[] actual = tracker.findByName("item2");
-        Item[] expected = new Item[tracker.findAll().length];
+        Item[] expected = new Item[2];
         expected[0] = item1;
         expected[1] = item2;
         assertThat(actual, is(expected));

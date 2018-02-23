@@ -1,7 +1,7 @@
 package ru.job4j.tracker;
 
-
 import java.util.Random;
+import java.util.Arrays;
 
 public class Tracker {
     /**
@@ -47,7 +47,8 @@ public class Tracker {
      */
     public boolean replace(String id, Item item) {
         boolean isExist = false;
-        for (int i = 0; i < this.items.length; i++) {
+        Item[] result = this.findAll();
+        for (int i = 0; i < result.length; i++) {
             if (id.equals(items[i].getId())) {
                 isExist = true;
                 items[i] = item;
@@ -65,11 +66,12 @@ public class Tracker {
      */
     public boolean delete(String id) {
         boolean isExist = false;
-        for (int i = 0; i < this.items.length; i++) {
+        Item[] result = this.findAll();
+        for (int i = 0; i < result.length; i++) {
             if (id.equals(items[i].getId())) {
                 isExist = true;
                 int start = i + 1;
-                System.arraycopy(items, start, items, i, items.length - start);
+                System.arraycopy(items, start, items, i, result.length - start);
                 position--;
                 break;
             }
@@ -106,7 +108,7 @@ public class Tracker {
                 result[index++] = item;
             }
         }
-        return result;
+        return Arrays.copyOf(result, index);
     }
 
     /**
