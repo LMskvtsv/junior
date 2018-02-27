@@ -1,18 +1,32 @@
 package ru.job4j.strategy;
 
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.After;
 
-import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.ByteArrayOutputStream;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class StrategyTest {
+    private PrintStream stdout = System.out;
+    private ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+    @Before
+    public void setUp() {
+        System.setOut(new PrintStream(out));
+    }
+
+    @After
+    public void tearDown() {
+        System.setOut(stdout);
+    }
+
     @Test
     public void drawTriangle() {
-        Triangle triangle = new Triangle();
-        assertThat(triangle.draw(), is(new StringBuilder()
+        assertThat(new Triangle().draw(), is(new StringBuilder()
                 .append("  +\n")
                 .append(" +++\n")
                 .append("+++++\n")
@@ -21,8 +35,7 @@ public class StrategyTest {
 
     @Test
     public void drawSquare() {
-        Square square = new Square();
-        assertThat(square.draw(), is(new StringBuilder()
+        assertThat(new Square().draw(), is(new StringBuilder()
                 .append("++++\n")
                 .append("+  +\n")
                 .append("+  +\n")
@@ -32,12 +45,9 @@ public class StrategyTest {
 
     @Test
     public void paintSquare() {
-        PrintStream stdout = System.out;
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(out));
         new Paint().draw(new Square());
         assertThat(
-                new String(out.toByteArray()),
+                new String(this.out.toByteArray()),
                 is(
                         new StringBuilder()
                                 .append("++++\n")
@@ -48,14 +58,10 @@ public class StrategyTest {
                                 .toString()
                 )
         );
-        System.setOut(stdout);
     }
 
     @Test
     public void paintTriangle() {
-        PrintStream stdout = System.out;
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(out));
         new Paint().draw(new Triangle());
         assertThat(
                 new String(out.toByteArray()),
@@ -68,6 +74,5 @@ public class StrategyTest {
                                 .toString()
                 )
         );
-        System.setOut(stdout);
     }
 }
