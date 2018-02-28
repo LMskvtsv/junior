@@ -1,12 +1,32 @@
 package ru.job4j.tracker;
 
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.After;
+
+import java.io.PrintStream;
+import java.io.ByteArrayOutputStream;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertNull;
 
 public class StartUITest {
+
+    private PrintStream stdout = System.out;
+    private ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+    @Before
+    public void setUp() {
+        System.setOut(new PrintStream(this.out));
+    }
+
+    @After
+    public void tearDown() {
+        System.setOut(this.stdout);
+    }
+
+
     @Test
     public void addItem() {
         Tracker tracker = new Tracker();
@@ -181,5 +201,72 @@ public class StartUITest {
         new StartUI(stubInput, tracker).init();
         Item actual = tracker.findById("fake_id");
         assertNull(actual);
+    }
+
+    @Test
+    public void consoleOutputShowAll() {
+        Tracker tracker = new Tracker();
+        Item item1 = new Item("item1", "desc1");
+        Item item2 = new Item("item2", "desc2");
+
+        tracker.add(item1);
+        tracker.add(item2);
+        Input stubInput = new StubInput(new String[]{"1", "6"});
+        new StartUI(stubInput, tracker).init();
+        assertThat(
+                new String(this.out.toByteArray()),
+                is(
+                        new StringBuilder()
+                                .append(getMenuString())
+                                .append("Введите пункт меню : " + System.lineSeparator())
+                                .append("------------ Все существущие заявки --------------" + System.lineSeparator())
+                                .append("Завка №1:" + System.lineSeparator())
+                                .append("- ай ди:" + tracker.findAll()[0].getId() + System.lineSeparator())
+                                .append("- имя:" + tracker.findAll()[0].getName() + System.lineSeparator())
+                                .append("- описание:" + tracker.findAll()[0].getDesc() + System.lineSeparator())
+                                .append("Завка №2:" + System.lineSeparator())
+                                .append("- ай ди:" + tracker.findAll()[1].getId() + System.lineSeparator())
+                                .append("- имя:" + tracker.findAll()[1].getName() + System.lineSeparator())
+                                .append("- описание:" + tracker.findAll()[1].getDesc() + System.lineSeparator())
+                                .append(getMenuString())
+                                .append("Введите пункт меню : " + System.lineSeparator())
+                                .append("Good bye, have a nice day!" + System.lineSeparator())
+                                .toString()
+                )
+        );
+    }
+
+    @Test
+    public void consoleOutputShowAllEmptyTracker() {
+        Tracker tracker = new Tracker();
+        Input stubInput = new StubInput(new String[]{"1", "6"});
+        new StartUI(stubInput, tracker).init();
+        assertThat(
+                new String(this.out.toByteArray()),
+                is(
+                        new StringBuilder()
+                                .append(getMenuString())
+                                .append("Введите пункт меню : \n")
+                                .append("------------ Все существущие заявки --------------\n")
+                                .append("Трекер пуст, как осенний куст :)\n")
+                                .append(getMenuString())
+                                .append("Введите пункт меню : \n")
+                                .append("Good bye, have a nice day!\n")
+                                .toString()
+                )
+        );
+    }
+
+    private String getMenuString() {
+        StringBuilder menuString = new StringBuilder();
+        menuString.append("Меню:" + System.lineSeparator());
+        menuString.append("0. Добавить новую заявку" + System.lineSeparator());
+        menuString.append("1. Показать все заявки" + System.lineSeparator());
+        menuString.append("2. Отредактировать заявку" + System.lineSeparator());
+        menuString.append("3. Удалить заявку" + System.lineSeparator());
+        menuString.append("4. Найти заявку по идентификатору" + System.lineSeparator());
+        menuString.append("5. Найти заявку по имени" + System.lineSeparator());
+        menuString.append("6. Выход" + System.lineSeparator());
+        return menuString.toString();
     }
 }

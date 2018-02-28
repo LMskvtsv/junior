@@ -16,12 +16,12 @@ public class StrategyTest {
 
     @Before
     public void setUp() {
-        System.setOut(new PrintStream(out));
+        System.setOut(new PrintStream(this.out));
     }
 
     @After
     public void tearDown() {
-        System.setOut(stdout);
+        System.setOut(this.stdout);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class StrategyTest {
     public void paintTriangle() {
         new Paint().draw(new Triangle());
         assertThat(
-                new String(out.toByteArray()),
+                new String(this.out.toByteArray()),
                 is(
                         new StringBuilder()
                                 .append("  +\n")
