@@ -218,19 +218,19 @@ public class StartUITest {
                 is(
                         new StringBuilder()
                                 .append(getMenuString())
-                                .append("Введите пункт меню : " + System.lineSeparator())
-                                .append("------------ Все существущие заявки --------------" + System.lineSeparator())
-                                .append("Завка №1:" + System.lineSeparator())
-                                .append("- ай ди:" + tracker.findAll()[0].getId() + System.lineSeparator())
-                                .append("- имя:" + tracker.findAll()[0].getName() + System.lineSeparator())
-                                .append("- описание:" + tracker.findAll()[0].getDesc() + System.lineSeparator())
-                                .append("Завка №2:" + System.lineSeparator())
-                                .append("- ай ди:" + tracker.findAll()[1].getId() + System.lineSeparator())
-                                .append("- имя:" + tracker.findAll()[1].getName() + System.lineSeparator())
-                                .append("- описание:" + tracker.findAll()[1].getDesc() + System.lineSeparator())
+                                .append("Введите пункт меню : ").append(System.lineSeparator())
+                                .append("------------ Все существущие заявки --------------").append(System.lineSeparator())
+                                .append("Завка №1:").append(System.lineSeparator())
+                                .append("- ай ди:").append(tracker.findAll()[0].getId()).append(System.lineSeparator())
+                                .append("- имя:").append(tracker.findAll()[0].getName()).append(System.lineSeparator())
+                                .append("- описание:").append(tracker.findAll()[0].getDesc()).append(System.lineSeparator())
+                                .append("Завка №2:").append(System.lineSeparator())
+                                .append("- ай ди:").append(tracker.findAll()[1].getId()).append(System.lineSeparator())
+                                .append("- имя:").append(tracker.findAll()[1].getName()).append(System.lineSeparator())
+                                .append("- описание:").append(tracker.findAll()[1].getDesc()).append(System.lineSeparator())
                                 .append(getMenuString())
-                                .append("Введите пункт меню : " + System.lineSeparator())
-                                .append("Good bye, have a nice day!" + System.lineSeparator())
+                                .append("Введите пункт меню : ").append(System.lineSeparator())
+                                .append("Good bye, have a nice day!").append(System.lineSeparator())
                                 .toString()
                 )
         );
@@ -246,12 +246,12 @@ public class StartUITest {
                 is(
                         new StringBuilder()
                                 .append(getMenuString())
-                                .append("Введите пункт меню : \n")
-                                .append("------------ Все существущие заявки --------------\n")
-                                .append("Трекер пуст, как осенний куст :)\n")
+                                .append("Введите пункт меню : ").append(System.lineSeparator())
+                                .append("------------ Все существущие заявки --------------").append(System.lineSeparator())
+                                .append("Трекер пуст, как осенний куст :)").append(System.lineSeparator())
                                 .append(getMenuString())
-                                .append("Введите пункт меню : \n")
-                                .append("Good bye, have a nice day!\n")
+                                .append("Введите пункт меню : ").append(System.lineSeparator())
+                                .append("Good bye, have a nice day!").append(System.lineSeparator())
                                 .toString()
                 )
         );
@@ -259,14 +259,14 @@ public class StartUITest {
 
     private String getMenuString() {
         StringBuilder menuString = new StringBuilder();
-        menuString.append("Меню:" + System.lineSeparator());
-        menuString.append("0. Добавить новую заявку" + System.lineSeparator());
-        menuString.append("1. Показать все заявки" + System.lineSeparator());
-        menuString.append("2. Отредактировать заявку" + System.lineSeparator());
-        menuString.append("3. Удалить заявку" + System.lineSeparator());
-        menuString.append("4. Найти заявку по идентификатору" + System.lineSeparator());
-        menuString.append("5. Найти заявку по имени" + System.lineSeparator());
-        menuString.append("6. Выход" + System.lineSeparator());
+        menuString.append("Меню:").append(System.lineSeparator());
+        menuString.append("0. Добавить новую заявку").append(System.lineSeparator());
+        menuString.append("1. Показать все заявки").append(System.lineSeparator());
+        menuString.append("2. Отредактировать заявку").append(System.lineSeparator());
+        menuString.append("3. Удалить заявку").append(System.lineSeparator());
+        menuString.append("4. Найти заявку по идентификатору").append(System.lineSeparator());
+        menuString.append("5. Найти заявку по имени").append(System.lineSeparator());
+        menuString.append("6. Выход").append(System.lineSeparator());
         return menuString.toString();
     }
 }
