@@ -27,19 +27,19 @@ public class StrategyTest {
     @Test
     public void drawTriangle() {
         assertThat(new Triangle().draw(), is(new StringBuilder()
-                .append("  +\n")
-                .append(" +++\n")
-                .append("+++++\n")
+                .append("  +" + System.lineSeparator())
+                .append(" +++" + System.lineSeparator())
+                .append("+++++" + System.lineSeparator())
                 .toString()));
     }
 
     @Test
     public void drawSquare() {
         assertThat(new Square().draw(), is(new StringBuilder()
-                .append("++++\n")
-                .append("+  +\n")
-                .append("+  +\n")
-                .append("++++\n")
+                .append("++++" + System.lineSeparator())
+                .append("+  +" + System.lineSeparator())
+                .append("+  +" + System.lineSeparator())
+                .append("++++" + System.lineSeparator())
                 .toString()));
     }
 
@@ -50,10 +50,10 @@ public class StrategyTest {
                 new String(this.out.toByteArray()),
                 is(
                         new StringBuilder()
-                                .append("++++\n")
-                                .append("+  +\n")
-                                .append("+  +\n")
-                                .append("++++\n")
+                                .append("++++" + System.lineSeparator())
+                                .append("+  +" + System.lineSeparator())
+                                .append("+  +" + System.lineSeparator())
+                                .append("++++" + System.lineSeparator())
                                 .append(System.lineSeparator())
                                 .toString()
                 )
@@ -67,9 +67,9 @@ public class StrategyTest {
                 new String(this.out.toByteArray()),
                 is(
                         new StringBuilder()
-                                .append("  +\n")
-                                .append(" +++\n")
-                                .append("+++++\n")
+                                .append("  +" + System.lineSeparator())
+                                .append(" +++" + System.lineSeparator())
+                                .append("+++++" + System.lineSeparator())
                                 .append(System.lineSeparator())
                                 .toString()
                 )
