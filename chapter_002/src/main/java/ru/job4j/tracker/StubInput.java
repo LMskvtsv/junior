@@ -14,4 +14,9 @@ public class StubInput implements Input {
         System.out.println(question);
         return userAnswers[index++];
     }
+
+    @Override
+    public int ask(String question, int[] range) {
+        return -1;
+    }
 }
