@@ -1,18 +1,11 @@
 package ru.job4j.tracker;
 
-class DeleteItem implements UserAction {
+class DeleteItem extends BaseAction {
 
-    @Override
-    public int key() {
-        return 3;
+    public DeleteItem(int key, String name) {
+        super(key, name);
     }
 
-    @Override
-    public String info() {
-        return "Удалить заявку";
-    }
-
-    @Override
     public void execute(Input input, Tracker tracker) {
         System.out.println("------------ Удаление заявки --------------");
         String id = input.ask("Введите идентификатор заявки, которую нужно удалить:");
@@ -27,7 +20,7 @@ class DeleteItem implements UserAction {
 
 public class MenuTracker {
 
-    private UserAction[] actions = new UserAction[6];
+    private BaseAction[] actions = new BaseAction[6];
     private Input input;
     private Tracker tracker;
 
@@ -37,16 +30,16 @@ public class MenuTracker {
     }
 
     public void fillActions() {
-        actions[0] = new AddItem();
-        actions[1] = new ShowAll();
-        actions[2] = new EditItem();
-        actions[3] = new DeleteItem();
-        actions[4] = new FindByID();
-        actions[5] = new FindByName();
+        actions[0] = new AddItem(0, "Добавление новой заявки");
+        actions[1] = new ShowAll(1, "Показать все заявки");
+        actions[2] = new EditItem(2, "Отредактировать заявку");
+        actions[3] = new DeleteItem(3, "Удалить заявку");
+        actions[4] = new FindByID(4, "Найти заявку по идентификатору");
+        actions[5] = new FindByName(5, "Найти заявку по имени");
     }
 
     public void show() {
-        for (UserAction action : actions) {
+        for (BaseAction action : actions) {
             System.out.println(new StringBuilder().append(action.key()).append(". ").append(action.info()));
         }
     }
@@ -55,16 +48,10 @@ public class MenuTracker {
         actions[key].execute(input, tracker);
     }
 
-    private class AddItem implements UserAction {
+    private class AddItem extends BaseAction {
 
-        @Override
-        public int key() {
-            return 0;
-        }
-
-        @Override
-        public String info() {
-            return "Добавление новой заявки";
+        public AddItem(int key, String info) {
+            super(key, info);
         }
 
         @Override
@@ -80,16 +67,10 @@ public class MenuTracker {
         }
     }
 
-    private static class ShowAll implements UserAction {
+    private static class ShowAll extends BaseAction {
 
-        @Override
-        public int key() {
-            return 1;
-        }
-
-        @Override
-        public String info() {
-            return "Показать все заявки";
+        public ShowAll(int key, String info) {
+            super(key, info);
         }
 
         @Override
@@ -109,16 +90,10 @@ public class MenuTracker {
         }
     }
 
-    private class EditItem implements UserAction {
+    private class EditItem extends BaseAction {
 
-        @Override
-        public int key() {
-            return 2;
-        }
-
-        @Override
-        public String info() {
-            return "Отредактировать заявку";
+        public EditItem(int key, String info) {
+            super(key, info);
         }
 
         @Override
@@ -140,16 +115,10 @@ public class MenuTracker {
         }
     }
 
-    private class FindByID implements UserAction {
+    private class FindByID extends BaseAction {
 
-        @Override
-        public int key() {
-            return 4;
-        }
-
-        @Override
-        public String info() {
-            return "Найти заявку по идентификатору";
+        public FindByID(int key, String info) {
+            super(key, info);
         }
 
         @Override
@@ -168,16 +137,10 @@ public class MenuTracker {
         }
     }
 
-    private class FindByName implements UserAction {
+    private class FindByName extends BaseAction {
 
-        @Override
-        public int key() {
-            return 5;
-        }
-
-        @Override
-        public String info() {
-            return "Найти заявку по имени";
+        public FindByName(int key, String info) {
+            super(key, info);
         }
 
         @Override
