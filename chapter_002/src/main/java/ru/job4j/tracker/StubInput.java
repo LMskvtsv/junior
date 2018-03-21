@@ -16,7 +16,19 @@ public class StubInput implements Input {
     }
 
     @Override
-    public int ask(String question, int[] range) {
-        return -1;
+    public int ask(String question, int[] range) throws MenuOutException {
+        int answer = Integer.valueOf(userAnswers[index++]);
+        boolean exist = false;
+        for (int i : range) {
+            if (i == answer) {
+                exist = true;
+                break;
+            }
+        }
+        if (!exist) {
+            throw new MenuOutException("Пожалуйста введите верный пункт меню еще раз:");
+        } else {
+            return answer;
+        }
     }
 }
