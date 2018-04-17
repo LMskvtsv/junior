@@ -5,24 +5,20 @@ import java.util.Objects;
 
 class Bishop extends Figure {
 
-    Cell[] possibleMoves = new Cell[64];
-
     /**
-     * With the creation of new Cell object all possible moves are calculated automatically.
-     * @param position
+     * With the creation of new Bishop object all possible moves are calculated automatically.
+     * @param position - starting position.
      */
     Bishop(Cell position) {
         super(position);
-        generatePossibleMoves();
     }
-
-    private int movesCounter = 0;
 
     /**
      * Generates all possible moves in accordance with the initial position.
      * When all possible moves were generated, remove all empty possibleMoves array's cells.
      */
-    private void generatePossibleMoves() {
+    @Override
+    protected void generatePossibleMoves() {
         calculateUpRightMoves(position.getX(), position.getY());
         calculateUpLeftMoves(position.getX(), position.getY());
         calculateDownRightMoves(position.getX(), position.getY());
@@ -121,7 +117,7 @@ class Bishop extends Figure {
     /**
      * Creates new Bishop object with specified position.
      * @param dest - position on the board.
-     * @return
+     * @return - new Bishop object
      */
     @Override
     public Figure copy(Cell dest) {

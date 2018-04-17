@@ -4,10 +4,20 @@ public abstract class Figure {
 
     final Cell position;
     final int maxWayLength = 8;
+    protected Cell[] possibleMoves = new Cell[64];
+    protected int movesCounter = 0;
 
+    /**
+     * With the creation of new Figure object all possible moves are calculated automatically.
+     *
+     * @param position - starting position.
+     */
     Figure(Cell position) {
         this.position = position;
+        generatePossibleMoves();
     }
+
+    protected abstract void generatePossibleMoves();
 
     /**
      * Calculates way of the figure from current position to destination position.
@@ -20,7 +30,7 @@ public abstract class Figure {
     /**
      * Creates new Figure object with specified position.
      * @param dest - position on the board.
-     * @return
+     * @return - new object with specified position.
      */
     public abstract Figure copy(Cell dest);
 }
