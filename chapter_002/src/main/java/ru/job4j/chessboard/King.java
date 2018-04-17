@@ -3,13 +3,13 @@ package ru.job4j.chessboard;
 import java.util.Arrays;
 import java.util.Objects;
 
-class Bishop extends Figure {
+class King extends Figure {
 
     /**
      * With the creation of new Bishop object all possible moves are calculated automatically.
      * @param position - starting position.
      */
-    Bishop(Cell position) {
+    King(Cell position) {
         super(position);
     }
 
@@ -23,6 +23,10 @@ class Bishop extends Figure {
         calculateUpLeftMoves(position.getX(), position.getY());
         calculateDownRightMoves(position.getX(), position.getY());
         calculateDownLeftMoves(position.getX(), position.getY());
+        calculateUpMoves(position.getX(), position.getY());
+        calculateLeftMoves(position.getX(), position.getY());
+        calculateDownMoves(position.getX(), position.getY());
+        calculateRightMoves(position.getX(), position.getY());
         possibleMoves = Arrays.stream(possibleMoves).filter(Objects::nonNull).toArray(Cell[]::new);
     }
 
@@ -32,7 +36,7 @@ class Bishop extends Figure {
      * @param y - horizontal coordinate of initial position
      */
     private void calculateUpRightMoves(int x, int y) {
-        while (x < Cell.MAX_CELL_NUMBER && y < Cell.MAX_CELL_NUMBER) {
+        if (x < Cell.MAX_CELL_NUMBER && y < Cell.MAX_CELL_NUMBER) {
             possibleMoves[movesCounter++] = new Cell(++x, ++y);
         }
     }
@@ -43,7 +47,7 @@ class Bishop extends Figure {
      * @param y - horizontal coordinate of initial position
      */
     private void calculateUpLeftMoves(int x, int y) {
-        while (x < Cell.MAX_CELL_NUMBER && y > Cell.MIN_CELL_NUMBER) {
+        if (x < Cell.MAX_CELL_NUMBER && y > Cell.MIN_CELL_NUMBER) {
             possibleMoves[movesCounter++] = new Cell(++x, --y);
         }
     }
@@ -54,7 +58,7 @@ class Bishop extends Figure {
      * @param y - horizontal coordinate of initial position
      */
     private void calculateDownRightMoves(int x, int y) {
-        while (x > Cell.MIN_CELL_NUMBER && y < Cell.MAX_CELL_NUMBER) {
+        if (x > Cell.MIN_CELL_NUMBER && y < Cell.MAX_CELL_NUMBER) {
             possibleMoves[movesCounter++] = new Cell(--x, ++y);
         }
     }
@@ -65,8 +69,52 @@ class Bishop extends Figure {
      * @param y - horizontal coordinate of initial position
      */
     private void calculateDownLeftMoves(int x, int y) {
-        while (x > Cell.MIN_CELL_NUMBER && y > Cell.MIN_CELL_NUMBER) {
+        if (x > Cell.MIN_CELL_NUMBER && y > Cell.MIN_CELL_NUMBER) {
             possibleMoves[movesCounter++] = new Cell(--x, --y);
+        }
+    }
+
+    /**
+     * Generates possible moves in up direction from initial position and adds them to possibleMoves array.
+     * @param x - vertical coordinate of initial position
+     * @param y - horizontal coordinate of initial position
+     */
+    private void calculateUpMoves(int x, int y) {
+        if (x < Cell.MAX_CELL_NUMBER) {
+            possibleMoves[movesCounter++] = new Cell(++x, y);
+        }
+    }
+
+    /**
+     * Generates possible moves in left direction from initial position and adds them to possibleMoves array.
+     * @param x - vertical coordinate of initial position
+     * @param y - horizontal coordinate of initial position
+     */
+    private void calculateLeftMoves(int x, int y) {
+        if (y > Cell.MIN_CELL_NUMBER) {
+            possibleMoves[movesCounter++] = new Cell(x, --y);
+        }
+    }
+
+    /**
+     * Generates possible moves in down direction from initial position and adds them to possibleMoves array.
+     * @param x - vertical coordinate of initial position
+     * @param y - horizontal coordinate of initial position
+     */
+    private void calculateDownMoves(int x, int y) {
+        if (x > Cell.MIN_CELL_NUMBER) {
+            possibleMoves[movesCounter++] = new Cell(--x, y);
+        }
+    }
+
+    /**
+     * Generates possible moves in right direction from initial position and adds them to possibleMoves array.
+     * @param x - vertical coordinate of initial position
+     * @param y - horizontal coordinate of initial position
+     */
+    private void calculateRightMoves(int x, int y) {
+        if (y < Cell.MAX_CELL_NUMBER) {
+            possibleMoves[movesCounter++] = new Cell(x, ++y);
         }
     }
 
@@ -93,6 +141,7 @@ class Bishop extends Figure {
             int startX = start.getX();
             int startY = start.getY();
             int destX = dest.getX();
+            int destY = dest.getY();
             if (start.getX() < dest.getX() && start.getY() < dest.getY()) {
                 while (startX != destX) {
                     way[counter++] = new Cell(++startX, ++startY);
@@ -110,6 +159,24 @@ class Bishop extends Figure {
                     way[counter++] = new Cell(--startX, ++startY);
                 }
             }
+
+            if (start.getX() < dest.getX() && start.getY() == dest.getY()) {
+                while (startX != destX) {
+                    way[counter++] = new Cell(++startX, startY);
+                }
+            } else if (start.getX() == dest.getX() && start.getY() > dest.getY()) {
+                while (startY != destY) {
+                    way[counter++] = new Cell(startX, --startY);
+                }
+            } else if (start.getX() > dest.getX() && start.getY() == dest.getY()) {
+                while (startX != destX) {
+                    way[counter++] = new Cell(--startX, startY);
+                }
+            } else if (start.getX() == dest.getX() && start.getY() < dest.getY()) {
+                while (startX != destX) {
+                    way[counter++] = new Cell(startX, ++startY);
+                }
+            }
         }
         return Arrays.stream(way).filter(Objects::nonNull).toArray(Cell[]::new);
     }
@@ -121,6 +188,6 @@ class Bishop extends Figure {
      */
     @Override
     public Figure copy(Cell dest) {
-        return new Bishop(dest);
+        return new King(dest);
     }
 }

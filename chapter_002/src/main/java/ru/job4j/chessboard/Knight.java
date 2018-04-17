@@ -3,13 +3,13 @@ package ru.job4j.chessboard;
 import java.util.Arrays;
 import java.util.Objects;
 
-class Bishop extends Figure {
+class Knight extends Figure {
 
     /**
      * With the creation of new Bishop object all possible moves are calculated automatically.
      * @param position - starting position.
      */
-    Bishop(Cell position) {
+    Knight(Cell position) {
         super(position);
     }
 
@@ -31,9 +31,15 @@ class Bishop extends Figure {
      * @param x - vertical coordinate of initial position
      * @param y - horizontal coordinate of initial position
      */
-    private void calculateUpRightMoves(int x, int y) {
-        while (x < Cell.MAX_CELL_NUMBER && y < Cell.MAX_CELL_NUMBER) {
-            possibleMoves[movesCounter++] = new Cell(++x, ++y);
+    private void calculateUpLeftMoves(int x, int y) {
+        x = x + 2;
+        int y1 = y + 1;
+        int y2 = y - 1;
+        if (x <= Cell.MAX_CELL_NUMBER && y1 <= Cell.MAX_CELL_NUMBER && y1 >= Cell.MIN_CELL_NUMBER) {
+            possibleMoves[movesCounter++] = new Cell(x, y1);
+        }
+        if (x <= Cell.MAX_CELL_NUMBER && y2 <= Cell.MAX_CELL_NUMBER && y2 >= Cell.MIN_CELL_NUMBER) {
+            possibleMoves[movesCounter++] = new Cell(x, y2);
         }
     }
 
@@ -42,9 +48,15 @@ class Bishop extends Figure {
      * @param x - vertical coordinate of initial position
      * @param y - horizontal coordinate of initial position
      */
-    private void calculateUpLeftMoves(int x, int y) {
-        while (x < Cell.MAX_CELL_NUMBER && y > Cell.MIN_CELL_NUMBER) {
-            possibleMoves[movesCounter++] = new Cell(++x, --y);
+    private void calculateUpRightMoves(int x, int y) {
+        x = x + 1;
+        int y1 = y + 2;
+        int y2 = y - 2;
+        if (x <= Cell.MAX_CELL_NUMBER && y1 <= Cell.MAX_CELL_NUMBER && y1 >= Cell.MIN_CELL_NUMBER) {
+            possibleMoves[movesCounter++] = new Cell(x, y1);
+        }
+        if (x <= Cell.MAX_CELL_NUMBER && y2 <= Cell.MAX_CELL_NUMBER && y2 >= Cell.MIN_CELL_NUMBER) {
+            possibleMoves[movesCounter++] = new Cell(x, y2);
         }
     }
 
@@ -54,8 +66,14 @@ class Bishop extends Figure {
      * @param y - horizontal coordinate of initial position
      */
     private void calculateDownRightMoves(int x, int y) {
-        while (x > Cell.MIN_CELL_NUMBER && y < Cell.MAX_CELL_NUMBER) {
-            possibleMoves[movesCounter++] = new Cell(--x, ++y);
+        x = x - 1;
+        int y1 = y + 2;
+        int y2 = y - 2;
+        if (x >= Cell.MIN_CELL_NUMBER && y1 <= Cell.MAX_CELL_NUMBER && y1 >= Cell.MIN_CELL_NUMBER) {
+            possibleMoves[movesCounter++] = new Cell(x, y1);
+        }
+        if (x >= Cell.MIN_CELL_NUMBER && y2 <= Cell.MAX_CELL_NUMBER && y2 >= Cell.MIN_CELL_NUMBER) {
+            possibleMoves[movesCounter++] = new Cell(x, y2);
         }
     }
 
@@ -65,16 +83,23 @@ class Bishop extends Figure {
      * @param y - horizontal coordinate of initial position
      */
     private void calculateDownLeftMoves(int x, int y) {
-        while (x > Cell.MIN_CELL_NUMBER && y > Cell.MIN_CELL_NUMBER) {
-            possibleMoves[movesCounter++] = new Cell(--x, --y);
+        x = x - 2;
+        int y1 = y + 1;
+        int y2 = y - 1;
+        if (x >= Cell.MIN_CELL_NUMBER && y1 <= Cell.MAX_CELL_NUMBER && y1 >= Cell.MIN_CELL_NUMBER) {
+            possibleMoves[movesCounter++] = new Cell(x, y1);
+        }
+        if (x >= Cell.MIN_CELL_NUMBER && y2 <= Cell.MAX_CELL_NUMBER && y2 >= Cell.MIN_CELL_NUMBER) {
+            possibleMoves[movesCounter++] = new Cell(x, y2);
         }
     }
+
 
     /**
      * Calculates way for bishop.
      * @param dest - destination position
      * @return all cells that will be passed on desirable way, including destination cell.
-     * @throws ImpossibleMoveException if destination cell was not found in possibleMoves array.
+     * @throws ru.job4j.chessboard.ImpossibleMoveException if destination cell was not found in possibleMoves array.
      */
     @Override
     public Cell[] way(Cell dest) throws ImpossibleMoveException {
@@ -92,24 +117,20 @@ class Bishop extends Figure {
             int counter = 0;
             int startX = start.getX();
             int startY = start.getY();
-            int destX = dest.getX();
-            if (start.getX() < dest.getX() && start.getY() < dest.getY()) {
-                while (startX != destX) {
-                    way[counter++] = new Cell(++startX, ++startY);
-                }
-            } else if (start.getX() > dest.getX() && start.getY() > dest.getY()) {
-                while (startX != destX) {
-                    way[counter++] = new Cell(--startX, --startY);
-                }
-            } else if (start.getX() < dest.getX() && start.getY() > dest.getY()) {
-                while (startX != destX) {
-                    way[counter++] = new Cell(++startX, --startY);
-                }
-            } else if (start.getX() > dest.getX() && start.getY() < dest.getY()) {
-                while (startX != destX) {
-                    way[counter++] = new Cell(--startX, ++startY);
-                }
+            if (Math.abs(dest.getX() - start.getX()) == 2  && startX < dest.getX()) {
+                way[counter++] = new Cell(++startX, startY);
+                way[counter++] = new Cell(++startX, startY);
+            } else if (Math.abs(dest.getX() - start.getX()) == 2 && startX > dest.getX()) {
+                way[counter++] = new Cell(--startX, startY);
+                way[counter++] = new Cell(--startX, startY);
+            } else if (Math.abs(dest.getX() - start.getX()) == 1 && start.getY() < dest.getY()) {
+                way[counter++] = new Cell(startX, ++startY);
+                way[counter++] = new Cell(startX, ++startY);
+            } else if (Math.abs(dest.getX() - start.getX()) == 1 && start.getY() > dest.getY()) {
+                way[counter++] = new Cell(startX, --startY);
+                way[counter++] = new Cell(startX, --startY);
             }
+            way[counter++] = new Cell(dest.getX(), dest.getY());
         }
         return Arrays.stream(way).filter(Objects::nonNull).toArray(Cell[]::new);
     }
@@ -121,6 +142,6 @@ class Bishop extends Figure {
      */
     @Override
     public Figure copy(Cell dest) {
-        return new Bishop(dest);
+        return new Knight(dest);
     }
 }
