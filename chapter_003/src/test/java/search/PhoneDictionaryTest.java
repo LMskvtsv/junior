@@ -1,7 +1,6 @@
-import search.Person;
-import search.PhoneDictionary;
-import org.junit.Test;
+package search;
 
+import org.junit.Test;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;

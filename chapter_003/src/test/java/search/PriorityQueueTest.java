@@ -1,6 +1,6 @@
+package search;
+
 import org.junit.Test;
-import search.PriorityQueue;
-import search.Task;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
