@@ -1,8 +1,19 @@
 package list;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConvertList2Array {
+
+    public List<Integer> convert(List<int[]> list) {
+        List<Integer> result = new ArrayList<>();
+        for (int[] array : list) {
+            for (int i : array) {
+                result.add(i);
+            }
+        }
+        return result;
+    }
 
     public int[][] toArray(List<Integer> list, int rows) {
 
