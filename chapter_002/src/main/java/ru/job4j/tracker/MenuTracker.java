@@ -1,5 +1,7 @@
 package ru.job4j.tracker;
 
+import java.util.ArrayList;
+
 class DeleteItem extends BaseAction {
 
     public DeleteItem(int key, String name) {
@@ -20,7 +22,7 @@ class DeleteItem extends BaseAction {
 
 public class MenuTracker {
 
-    private BaseAction[] actions = new BaseAction[6];
+    private ArrayList<BaseAction> actions = new ArrayList<>();
     private Input input;
     private Tracker tracker;
 
@@ -30,12 +32,12 @@ public class MenuTracker {
     }
 
     public void fillActions() {
-        actions[0] = new AddItem(0, "Добавление новой заявки");
-        actions[1] = new ShowAll(1, "Показать все заявки");
-        actions[2] = new EditItem(2, "Отредактировать заявку");
-        actions[3] = new DeleteItem(3, "Удалить заявку");
-        actions[4] = new FindByID(4, "Найти заявку по идентификатору");
-        actions[5] = new FindByName(5, "Найти заявку по имени");
+        actions.add(new AddItem(0, "Добавление новой заявки"));
+        actions.add(new ShowAll(1, "Показать все заявки"));
+        actions.add(new EditItem(2, "Отредактировать заявку"));
+        actions.add(new DeleteItem(3, "Удалить заявку"));
+        actions.add(new FindByID(4, "Найти заявку по идентификатору"));
+        actions.add(new FindByName(5, "Найти заявку по имени"));
     }
 
     public void show() {
@@ -45,7 +47,7 @@ public class MenuTracker {
     }
 
     public void select(int key) {
-        actions[key].execute(input, tracker);
+        actions.get(key).execute(input, tracker);
     }
 
     private class AddItem extends BaseAction {
@@ -76,13 +78,13 @@ public class MenuTracker {
         @Override
         public void execute(Input input, Tracker tracker) {
             System.out.println("------------ Все существущие заявки --------------");
-            Item[] result = tracker.findAll();
-            if (result.length > 0) {
-                for (int i = 0; i < result.length; i++) {
-                    System.out.println("Завка №" + (i + 1) + ":");
-                    System.out.println("- ай ди:" + result[i].getId());
-                    System.out.println("- имя:" + result[i].getName());
-                    System.out.println("- описание:" + result[i].getDesc());
+            ArrayList<Item> result = tracker.findAll();
+            if (result.size() > 0) {
+                for (Item i : result) {
+                    System.out.println("Завка №" + (result.indexOf(i) + 1) + ":");
+                    System.out.println("- ай ди:" + i.getId());
+                    System.out.println("- имя:" + i.getName());
+                    System.out.println("- описание:" + i.getDesc());
                 }
             } else {
                 System.out.println("Трекер пуст, как осенний куст :)");
@@ -148,9 +150,9 @@ public class MenuTracker {
             System.out.println("------------ Поиск заявки по имени --------------");
             String name = input.ask("Введите имя заявки, которую нужно найти:");
             System.out.println("Введено имя: " + name);
-            Item[] result = tracker.findByName(name);
-            System.out.println("------------ Количество заявок с заданным именем: " + result.length + " ------------");
-            if (result.length > 0) {
+            ArrayList<Item> result = tracker.findByName(name);
+            System.out.println("------------ Количество заявок с заданным именем: " + result.size() + " ------------");
+            if (result.size() > 0) {
                 for (Item item : result) {
                     if (item != null) {
                         System.out.println("Идентификатор:" + item.getId());

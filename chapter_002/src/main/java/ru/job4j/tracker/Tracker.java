@@ -1,5 +1,6 @@
 package ru.job4j.tracker;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Arrays;
 
@@ -7,13 +8,8 @@ public class Tracker {
     /**
      * Массив для хранение заявок.
      */
-    private final Item[] items = new Item[100];
+    private final ArrayList<Item> items = new ArrayList<>();
     private static final Random RND = new Random();
-
-    /**
-     * Указатель ячейки для новой заявки.
-     */
-    private int position = 0;
 
     /**
      * Метод реализаущий добавление заявки в хранилище
@@ -22,7 +18,7 @@ public class Tracker {
      */
     public Item add(Item item) {
         item.setId(this.generateId());
-        this.items[this.position++] = item;
+        this.items.add(item);
         item.setCreated(System.currentTimeMillis());
         return item;
     }
@@ -47,11 +43,10 @@ public class Tracker {
      */
     public boolean replace(String id, Item item) {
         boolean isExist = false;
-        Item[] result = this.findAll();
-        for (int i = 0; i < result.length; i++) {
-            if (id.equals(items[i].getId())) {
+        for (Item i : items) {
+            if (id.equals(i.getId())) {
                 isExist = true;
-                items[i] = item;
+                items.add(items.indexOf(i), item);
                 break;
             }
         }
@@ -66,13 +61,11 @@ public class Tracker {
      */
     public boolean delete(String id) {
         boolean isExist = false;
-        Item[] result = this.findAll();
-        for (int i = 0; i < result.length; i++) {
-            if (id.equals(items[i].getId())) {
+        ArrayList<Item> result = this.findAll();
+        for (Item i : result) {
+            if (id.equals(i.getId())) {
                 isExist = true;
-                int start = i + 1;
-                System.arraycopy(items, start, items, i, result.length - start);
-                position--;
+                items.remove(i);
                 break;
             }
         }
@@ -84,12 +77,8 @@ public class Tracker {
      *
      * @return - возвращает все заявки, которые были заполнены.
      */
-    public Item[] findAll() {
-        Item[] result = new Item[position];
-        for (int i = 0; i < position; i++) {
-            result[i] = items[i];
-        }
-        return result;
+    public ArrayList<Item> findAll() {
+        return items;
     }
 
     /**
@@ -99,16 +88,15 @@ public class Tracker {
      * @param key - имя заявки которую нужно найти.
      * @return item[] - массив найденных заявок.
      */
-    public Item[] findByName(String key) {
-        Item[] all = findAll();
-        Item[] result = new Item[all.length];
-        int index = 0;
+    public ArrayList<Item> findByName(String key) {
+        ArrayList<Item> all = findAll();
+        ArrayList<Item> result = new ArrayList<>();
         for (Item item : all) {
             if (item != null && (key.equals(item.getName()))) {
-                result[index++] = item;
+                result.add(item);
             }
         }
-        return Arrays.copyOf(result, index);
+        return result;
     }
 
     /**

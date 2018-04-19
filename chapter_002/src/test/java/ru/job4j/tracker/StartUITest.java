@@ -6,6 +6,7 @@ import org.junit.After;
 
 import java.io.PrintStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -32,10 +33,10 @@ public class StartUITest {
         Tracker tracker = new Tracker();
         Input stubInput = new StubInput(new String[]{"0", "name1", "desc1", "n", "0", "name2", "desc2", "y"});
         new StartUI(stubInput, tracker).init();
-        assertThat(tracker.findAll()[0].getName(), is("name1"));
-        assertThat(tracker.findAll()[0].getDesc(), is("desc1"));
-        assertThat(tracker.findAll()[1].getName(), is("name2"));
-        assertThat(tracker.findAll()[1].getDesc(), is("desc2"));
+        assertThat(tracker.findAll().get(0).getName(), is("name1"));
+        assertThat(tracker.findAll().get(0).getDesc(), is("desc1"));
+        assertThat(tracker.findAll().get(1).getName(), is("name2"));
+        assertThat(tracker.findAll().get(1).getDesc(), is("desc2"));
     }
 
     @Test
@@ -68,8 +69,8 @@ public class StartUITest {
         tracker.add(item2);
         Input stubInput = new StubInput(new String[]{"3", item1.getId(), "n", "1", "y"});
         new StartUI(stubInput, tracker).init();
-        assertThat(tracker.findAll().length, is(1));
-        assertThat(tracker.findAll()[0].getId(), is(item2.getId()));
+        assertThat(tracker.findAll().size(), is(1));
+        assertThat(tracker.findAll().get(0).getId(), is(item2.getId()));
     }
 
     @Test
@@ -79,8 +80,8 @@ public class StartUITest {
         tracker.add(item1);
         Input stubInput = new StubInput(new String[]{"3", "fake_id", "n", "1", "y"});
         new StartUI(stubInput, tracker).init();
-        assertThat(tracker.findAll().length, is(1));
-        assertThat(tracker.findAll()[0].getId(), is(item1.getId()));
+        assertThat(tracker.findAll().size(), is(1));
+        assertThat(tracker.findAll().get(0).getId(), is(item1.getId()));
     }
 
     @Test
@@ -94,10 +95,10 @@ public class StartUITest {
         tracker.add(item2);
         tracker.add(item3);
 
-        Item[] expected = new Item[3];
-        expected[0] = item1;
-        expected[1] = item2;
-        expected[2] = item3;
+        ArrayList<Item> expected = new ArrayList<>();
+        expected.add(item1);
+        expected.add(item2);
+        expected.add(item3);
         Input stubInput = new StubInput(new String[]{"1", "y"});
         new StartUI(stubInput, tracker).init();
         assertThat(tracker.findAll(), is(expected));
@@ -106,7 +107,7 @@ public class StartUITest {
     @Test
     public void findAllEmptyTracker() {
         Tracker tracker = new Tracker();
-        Item[] expected = new Item[0];
+        ArrayList<Item> expected = new ArrayList<>();
         Input stubInput = new StubInput(new String[]{"1", "y"});
         new StartUI(stubInput, tracker).init();
         assertThat(tracker.findAll(), is(expected));
@@ -125,9 +126,9 @@ public class StartUITest {
 
         Input stubInput = new StubInput(new String[]{"5", item2.getName(), "y"});
         new StartUI(stubInput, tracker).init();
-        Item[] actual = tracker.findByName("item2");
-        Item[] expected = new Item[1];
-        expected[0] = item2;
+        ArrayList<Item> actual = tracker.findByName("item2");
+        ArrayList<Item> expected = new ArrayList<>();
+        expected.add(item2);
         assertThat(actual, is(expected));
     }
 
@@ -144,10 +145,10 @@ public class StartUITest {
 
         Input stubInput = new StubInput(new String[]{"5", item2.getName(), "y"});
         new StartUI(stubInput, tracker).init();
-        Item[] actual = tracker.findByName("item2");
-        Item[] expected = new Item[2];
-        expected[0] = item1;
-        expected[1] = item2;
+        ArrayList<Item> actual = tracker.findByName("item2");
+        ArrayList<Item> expected = new ArrayList<>();
+        expected.add(item1);
+        expected.add(item2);
         assertThat(actual, is(expected));
     }
 
@@ -164,8 +165,8 @@ public class StartUITest {
 
         Input stubInput = new StubInput(new String[]{"5", "fake_name", "y"});
         new StartUI(stubInput, tracker).init();
-        Item[] actual = tracker.findByName("fake_name");
-        Item[] expected = new Item[0];
+        ArrayList<Item> actual = tracker.findByName("fake_name");
+        ArrayList<Item> expected = new ArrayList<>();
         assertThat(actual, is(expected));
     }
 
@@ -221,13 +222,13 @@ public class StartUITest {
                                 .append("Введите пункт меню:").append(System.lineSeparator())
                                 .append("------------ Все существущие заявки --------------").append(System.lineSeparator())
                                 .append("Завка №1:").append(System.lineSeparator())
-                                .append("- ай ди:").append(tracker.findAll()[0].getId()).append(System.lineSeparator())
-                                .append("- имя:").append(tracker.findAll()[0].getName()).append(System.lineSeparator())
-                                .append("- описание:").append(tracker.findAll()[0].getDesc()).append(System.lineSeparator())
+                                .append("- ай ди:").append(tracker.findAll().get(0).getId()).append(System.lineSeparator())
+                                .append("- имя:").append(tracker.findAll().get(0).getName()).append(System.lineSeparator())
+                                .append("- описание:").append(tracker.findAll().get(0).getDesc()).append(System.lineSeparator())
                                 .append("Завка №2:").append(System.lineSeparator())
-                                .append("- ай ди:").append(tracker.findAll()[1].getId()).append(System.lineSeparator())
-                                .append("- имя:").append(tracker.findAll()[1].getName()).append(System.lineSeparator())
-                                .append("- описание:").append(tracker.findAll()[1].getDesc()).append(System.lineSeparator())
+                                .append("- ай ди:").append(tracker.findAll().get(1).getId()).append(System.lineSeparator())
+                                .append("- имя:").append(tracker.findAll().get(1).getName()).append(System.lineSeparator())
+                                .append("- описание:").append(tracker.findAll().get(1).getDesc()).append(System.lineSeparator())
                                 .append("Exit? (y/n)").append(System.lineSeparator())
                                 .toString()
                 )
