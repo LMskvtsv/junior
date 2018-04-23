@@ -128,4 +128,14 @@ public class CoffeeMachineTest {
         assertThat(actual, is(expected));
         coffeeMachine.changes(5, 6);
     }
+
+    @Test(expected = NotEnoughCoinsException.class)
+    public void severalBuysNotEnoughCoins2() {
+        int[][] coins = {{10, 1}, {2, 2}};
+        coffeeMachine.fillMachineWithCoins(coins);
+        int[] actual = coffeeMachine.changes(6, 20);
+        int[] expected = new int[]{10, 2, 2};
+        assertThat(actual, is(expected));
+        coffeeMachine.changes(4, 6);
+    }
 }
