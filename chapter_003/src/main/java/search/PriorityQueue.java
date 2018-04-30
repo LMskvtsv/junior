@@ -17,12 +17,12 @@ public class PriorityQueue {
         if (tasks.size() == 0) {
             index = 0;
         } else {
-            for (Task t : tasks) {
-                if (task.getPriority() <= t.getPriority()) {
-                    index = tasks.indexOf(t);
+            for (int i = 0; i < tasks.size(); i++) {
+                if (task.getPriority() <= tasks.get(i).getPriority()) {
+                    index = i;
                     break;
                 } else {
-                    index = tasks.indexOf(t) + 1;
+                    index = i + 1;
                 }
             }
         }
