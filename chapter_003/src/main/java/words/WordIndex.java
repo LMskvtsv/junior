@@ -1,15 +1,12 @@
-package wordIndex;
+package words;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
 public class WordIndex {
 
-    private HashMap<String, HashSet<Integer>> wordsCollection = new HashMap<>();
-    private int wordIndex = 0;
+    private WordTrie wordsCollection;
 
     /**
      * Load file with words and for every word calculates index.
@@ -20,15 +17,12 @@ public class WordIndex {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         InputStream is = classloader.getResourceAsStream(filename);
         Scanner scanner = new Scanner(is);
+        wordsCollection = new WordTrie();
         while (scanner.hasNext()) {
             String word = scanner.next();
-            if (!wordsCollection.containsKey(word)) {
-                wordsCollection.put(word, new HashSet<>());
-                wordsCollection.get(word).add(wordIndex++);
-            } else {
-                wordsCollection.get(word).add(wordIndex++);
-            }
+            wordsCollection.insert(word);
         }
+
     }
 
     /**
@@ -39,10 +33,7 @@ public class WordIndex {
      */
 
     Set<Integer> getIndexes4Word(String searchWord) {
-        Set<Integer> indexes = wordsCollection.get(searchWord);
-        if(indexes.size() == 0){
-            indexes = null;
-        }
+        Set<Integer> indexes = null;
         return indexes;
     }
 }
