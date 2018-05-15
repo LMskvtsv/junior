@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Bank {
 
@@ -94,19 +95,19 @@ public class Bank {
 
         User srcUser = findUserByPassport(srcPassport);
         User destUser = findUserByPassport(destPassport);
-        Account srcAccount;
-        Account destAccount;
+        Optional<Account> srcAccount;
+        Optional<Account> destAccount;
         boolean result = false;
         if (srcUser == null || destUser == null) {
             System.out.println(String.format("Cannot find all users with passport %s, %s.", srcPassport, destPassport));
         } else {
             srcAccount = findAccountByAccNumber(srcAccountNumber, userAccounts.get(srcUser));
             destAccount = findAccountByAccNumber(destAccountNumber, userAccounts.get(destUser));
-            if (srcAccount == null || destAccount == null || srcAccount.getValue() < amount) {
+            if (!srcAccount.isPresent() || !destAccount.isPresent() || srcAccount.get().getValue() < amount) {
                 System.out.println(String.format("Impossible operation. Cannot find account or not enough money for the transfer."));
             } else {
-                srcAccount.setValue(srcAccount.getValue() - amount);
-                destAccount.setValue(destAccount.getValue() + amount);
+                srcAccount.get().setValue(srcAccount.get().getValue() - amount);
+                destAccount.get().setValue(destAccount.get().getValue() + amount);
                 result = true;
             }
         }
@@ -120,15 +121,11 @@ public class Bank {
      * @param srcAccounts      - list of accounts.
      * @return account is it was found, null - if account wasn't found.
      */
-    private Account findAccountByAccNumber(String srcAccountNumber, List<Account> srcAccounts) {
-        Account srcAccount = null;
-        for (Account acc : srcAccounts) {
-            if (acc.getAccountNumber().equals(srcAccountNumber)) {
-                srcAccount = acc;
-                break;
-            }
-        }
-        return srcAccount;
+    private Optional<Account> findAccountByAccNumber(String srcAccountNumber, List<Account> srcAccounts) {
+        Optional<Account> optional = srcAccounts.stream()
+                .filter(x -> srcAccountNumber.equals(x.getAccountNumber()))
+                .findFirst();
+        return optional;
     }
 
     /**
