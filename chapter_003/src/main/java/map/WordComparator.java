@@ -23,15 +23,11 @@ public class WordComparator {
      * @return map with char as key and number of this char in a given string as value.
      */
     private Map<Character, Integer> getMapOfChars(String string) {
-        Map<Character, Integer> firstCharCounter = new HashMap<>();
+        Map<Character, Integer> mapOfChars = new HashMap<>();
         for (Character ch : string.toCharArray()) {
-            if (firstCharCounter.containsKey(ch)) {
-                int counter = firstCharCounter.get(ch);
-                firstCharCounter.put(ch, ++counter);
-            } else {
-                firstCharCounter.put(ch, 1);
-            }
+            mapOfChars.computeIfPresent(ch, (k, v) -> v + 1);
+            mapOfChars.putIfAbsent(ch, 1);
         }
-        return firstCharCounter;
+        return mapOfChars;
     }
 }
