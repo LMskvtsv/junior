@@ -7,7 +7,7 @@ import java.util.List;
 public class Converter {
     Iterator<Integer> convert(Iterator<Iterator<Integer>> it) {
         List<Integer> list = new ArrayList<>();
-        it.forEachRemaining(i -> i.forEachRemaining(j -> list.add(j)));
+        it.forEachRemaining(i -> i.forEachRemaining(list::add));
         return list.iterator();
     }
 }

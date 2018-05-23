@@ -12,6 +12,12 @@ public class SimpleArray<T> implements Iterable<T> {
         this.array = (T[]) new Object[size];
     }
 
+    /**
+     * Adds element into array.
+     *
+     * @param model
+     * @throws ArrayIndexOutOfBoundsException in case there is no any space left.
+     */
     public void add(T model) throws ArrayIndexOutOfBoundsException {
         if (index >= array.length - 1) {
             throw new ArrayIndexOutOfBoundsException();
@@ -19,12 +25,23 @@ public class SimpleArray<T> implements Iterable<T> {
         array[index++] = model;
     }
 
+    /**
+     * Replace or set new value by index.
+     *
+     * @param index
+     * @param model value
+     */
     public void set(int index, T model) {
         if (index < array.length - 1) {
             array[index] = model;
         }
     }
 
+    /**
+     * Deletes element. Copy array into new one except one - that needs to be deleted.
+     *
+     * @param index
+     */
     public void delete(int index) {
         T[] newArray = (T[]) new Object[array.length];
         int newIndex = 0;
@@ -36,7 +53,13 @@ public class SimpleArray<T> implements Iterable<T> {
         array = newArray;
     }
 
-    public T get(int index) throws ArrayIndexOutOfBoundsException {
+    /**
+     * Get element by index.
+     *
+     * @param index - index
+     * @return element by index
+     */
+    public T get(int index) {
         return array[index];
     }
 
