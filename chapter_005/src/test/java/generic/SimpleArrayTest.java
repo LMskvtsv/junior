@@ -11,14 +11,14 @@ public class SimpleArrayTest {
     public void whenAddStringThanItExists() {
         SimpleArray<String> simpleArray = new SimpleArray<>(5);
         simpleArray.add("first element");
-        assertThat(simpleArray.get(0), is("first element"));
+        assertThat(simpleArray.getValue(0), is("first element"));
     }
 
     @Test
     public void whenAddIntThanItExists() {
         SimpleArray<Integer> simpleArray = new SimpleArray<>(5);
         simpleArray.add(1);
-        assertThat(simpleArray.get(0), is(1));
+        assertThat(simpleArray.getValue(0), is(1));
     }
 
     @Test
@@ -27,7 +27,7 @@ public class SimpleArrayTest {
         simpleArray.add("first element");
         simpleArray.add("second element");
         simpleArray.set(0, "changed element");
-        assertThat(simpleArray.get(0), is("changed element"));
+        assertThat(simpleArray.getValue(0), is("changed element"));
     }
 
     @Test
@@ -36,7 +36,7 @@ public class SimpleArrayTest {
         simpleArray.add("first element");
         simpleArray.add("second element");
         simpleArray.delete(0);
-        assertThat(simpleArray.get(0), is("second element"));
+        assertThat(simpleArray.getValue(0), is("second element"));
     }
 
     @Test

@@ -59,8 +59,25 @@ public class SimpleArray<T> implements Iterable<T> {
      * @param index - index
      * @return element by index
      */
-    public T get(int index) {
+    public T getValue(int index) {
         return array[index];
+    }
+
+    /**
+     * Get first index by element value.
+     *
+     * @param value
+     * @return index of the element.
+     */
+    public int getIndex(T value) {
+        int k = 0;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == value) {
+                k = i;
+                break;
+            }
+        }
+        return k;
     }
 
     @Override
