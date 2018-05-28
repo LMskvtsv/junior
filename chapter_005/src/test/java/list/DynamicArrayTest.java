@@ -77,4 +77,27 @@ public class DynamicArrayTest {
         assertThat(i.next(), is(13));
         i.next();
     }
+
+    @Test
+    public void whenEmptyThenHasNextIsFalse() {
+        DynamicArray<Integer> dynamicArray = new DynamicArray<>();
+        Iterator i = dynamicArray.iterator();
+        assertThat(i.hasNext(), is(false));
+    }
+
+    @Test
+    public void whenEmptyInTheMiddleThenHasNextIsTrue() {
+        DynamicArray<Integer> dynamicArray = new DynamicArray<>();
+        Iterator i = dynamicArray.iterator();
+        dynamicArray.add(1);
+        dynamicArray.add(null);
+        dynamicArray.add(3);
+        assertThat(i.hasNext(), is(true));
+        assertThat(i.next(), is(1));
+        assertThat(i.hasNext(), is(true));
+        i.next();
+        assertThat(i.hasNext(), is(true));
+        assertThat(i.next(), is(3));
+        assertThat(i.hasNext(), is(false));
+    }
 }

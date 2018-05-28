@@ -45,7 +45,7 @@ public class DynamicArray<E> implements Iterable<E> {
             public boolean hasNext() throws ConcurrentModificationException {
                 boolean result = false;
                 if (modCount == savedModCount) {
-                    if (counter < array.length) {
+                    if (index != 0 && counter < index) {
                         result = true;
                     }
                 } else {
