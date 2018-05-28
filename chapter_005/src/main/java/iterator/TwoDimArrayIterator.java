@@ -22,14 +22,9 @@ public class TwoDimArrayIterator implements Iterator {
     public boolean hasNext() {
         int lastIndex = values.length - 1;
         boolean result = false;
-        if (values.length == 0) {
-            result = false;
-        } else if (rowIndex < lastIndex) {
+        if (values.length != 0
+                && (rowIndex < lastIndex || (rowIndex == lastIndex && columnIndex <= values[lastIndex].length - 1))) {
             result = true;
-        } else if (rowIndex == lastIndex) {
-            if (columnIndex <= values[lastIndex].length - 1) {
-                result = true;
-            }
         }
         return result;
     }
@@ -45,11 +40,11 @@ public class TwoDimArrayIterator implements Iterator {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
-        if (columnIndex < values[rowIndex].length) {
-            return values[rowIndex][columnIndex++];
-        } else {
+        int result = values[rowIndex][columnIndex++];
+        if (columnIndex >= values[rowIndex].length) {
             columnIndex = 0;
-            return values[++rowIndex][columnIndex++];
+            rowIndex++;
         }
+        return result;
     }
 }
