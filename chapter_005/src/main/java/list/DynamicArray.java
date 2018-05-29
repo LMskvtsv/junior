@@ -28,6 +28,15 @@ public class DynamicArray<E> implements Iterable<E> {
     }
 
     /**
+     * Метод получения текщего размера.
+     */
+
+    public int getSize() {
+        return index;
+    }
+
+
+    /**
      * Метод получения элемента по индексу.
      */
 
