@@ -1,13 +1,28 @@
 package iterator;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.NoSuchElementException;
 
 public class Converter {
     Iterator<Integer> convert(Iterator<Iterator<Integer>> it) {
-        List<Integer> list = new ArrayList<>();
-        it.forEachRemaining(i -> i.forEachRemaining(list::add));
-        return list.iterator();
+        return new Iterator<Integer>() {
+            Iterator<Integer> currentIterator = it.next();
+
+            @Override
+            public boolean hasNext() {
+                if (it.hasNext() && !currentIterator.hasNext()) {
+                    currentIterator = it.next();
+                }
+                return currentIterator.hasNext();
+            }
+
+            @Override
+            public Integer next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                return currentIterator.next();
+            }
+        };
     }
 }
