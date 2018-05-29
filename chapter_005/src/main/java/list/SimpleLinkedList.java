@@ -29,12 +29,18 @@ public class SimpleLinkedList<E> {
 
     public E deleteFirstAddedElement() {
         Node<E> nodeToDelete = this.last;
-        for (int i = 0; i < size - 2; i++) {
-            nodeToDelete = nodeToDelete.previous;
+        E deletedDate;
+        if (nodeToDelete.previous != null) {
+            for (int i = 0; i < size - 2; i++) {
+                nodeToDelete = nodeToDelete.previous;
+            }
+            deletedDate = nodeToDelete.previous.date;
+            nodeToDelete.previous = null;
+            size--;
+        } else {
+            deletedDate = nodeToDelete != null ? nodeToDelete.date : null;
         }
-        nodeToDelete.previous = null;
-        size--;
-        return nodeToDelete.date;
+        return deletedDate;
     }
 
     /**
@@ -43,9 +49,14 @@ public class SimpleLinkedList<E> {
 
     public E deleteLastAddedElement() {
         Node<E> nodeToDelete = this.last;
-        E deletedDate = nodeToDelete.date;
-        this.last = nodeToDelete.previous;
-        size--;
+        E deletedDate;
+        if (nodeToDelete != null) {
+            deletedDate = nodeToDelete.date;
+            this.last = nodeToDelete.previous;
+            size--;
+        } else {
+            deletedDate = null;
+        }
         return deletedDate;
     }
 
