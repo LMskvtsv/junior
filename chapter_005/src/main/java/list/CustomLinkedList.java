@@ -31,6 +31,28 @@ public class CustomLinkedList<E> implements Iterable<E> {
         return nodeToReturn.value;
     }
 
+    /**
+     * Возвращает длину списка.
+     * @return
+     */
+
+    public int getSize() {
+        return size;
+    }
+
+    public E deleteLastAddedElement() {
+        CustomLinkedList.Node<E> nodeToDelete = this.last;
+        E deletedDate;
+        if (nodeToDelete != null) {
+            deletedDate = nodeToDelete.value;
+            this.last = nodeToDelete.previous;
+            size--;
+        } else {
+            deletedDate = null;
+        }
+        return deletedDate;
+    }
+
     @Override
     public Iterator<E> iterator() {
         return new Iterator<E>() {
