@@ -33,6 +33,7 @@ public class CustomLinkedList<E> implements Iterable<E> {
 
     /**
      * Возвращает длину списка.
+     *
      * @return
      */
 
@@ -60,14 +61,12 @@ public class CustomLinkedList<E> implements Iterable<E> {
             private Node<E> current = last;
 
             @Override
-            public boolean hasNext() throws ConcurrentModificationException {
+            public boolean hasNext() {
                 boolean result = false;
                 if (modCount == savedModCount) {
                     if (current.previous != null) {
                         result = true;
                     }
-                } else {
-                    throw new ConcurrentModificationException();
                 }
                 return result;
             }

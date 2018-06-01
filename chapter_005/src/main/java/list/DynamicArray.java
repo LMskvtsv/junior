@@ -51,14 +51,12 @@ public class DynamicArray<E> implements Iterable<E> {
             int counter = 0;
 
             @Override
-            public boolean hasNext() throws ConcurrentModificationException {
+            public boolean hasNext() {
                 boolean result = false;
                 if (modCount == savedModCount) {
                     if (index != 0 && counter < index) {
                         result = true;
                     }
-                } else {
-                    throw new ConcurrentModificationException();
                 }
                 return result;
             }
