@@ -15,6 +15,23 @@ public class SimpleTree<E extends Comparable<E>> implements Iterable {
     private Node<E> root;
 
     /**
+     * Определяет является ли дерево двоичным.
+     *
+     * @return true если дерево двоичное.
+     */
+    public boolean isBinary() {
+        Iterator iterator = this.iterator();
+        boolean result = true;
+        while (iterator.hasNext()) {
+            if (findBy((E) iterator.next()).get().leaves().size() > 2) {
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Добавить элемент child в parent.
      * Parent может иметь список child.
      *
