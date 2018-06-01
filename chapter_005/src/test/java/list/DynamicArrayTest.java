@@ -21,17 +21,6 @@ public class DynamicArrayTest {
         assertThat(dynamicArray.get(3), is(14));
     }
 
-    @Test(expected = ConcurrentModificationException.class)
-    public void whenSizeThreeAddThreeElementsAddOneElementWhileIterateThenException() {
-        DynamicArray<Integer> dynamicArray = new DynamicArray<>();
-        dynamicArray.add(11);
-        dynamicArray.add(12);
-        dynamicArray.add(13);
-        for (int i : dynamicArray) {
-            dynamicArray.add(14);
-        }
-    }
-
     @Test
     public void whenHasNextThanHasNextTrue() {
         DynamicArray<Integer> dynamicArray = new DynamicArray<>();
