@@ -11,14 +11,14 @@ public class RectangleMove implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (!Thread.currentThread().isInterrupted()) {
             int rawLimit = 290;
             while (rect.getX() < rawLimit) {
                 this.rect.setX(this.rect.getX() + 1);
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    return;
                 }
             }
             while (rect.getX() > 1) {
@@ -26,7 +26,7 @@ public class RectangleMove implements Runnable {
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    return;
                 }
             }
         }
