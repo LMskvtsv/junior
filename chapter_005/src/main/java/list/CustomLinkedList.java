@@ -1,19 +1,24 @@
 package list;
 
-import java.util.ConcurrentModificationException;
+import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+@ThreadSafe
 public class CustomLinkedList<E> implements Iterable<E> {
-
+    @GuardedBy("this")
     private int size = 0;
+    @GuardedBy("this")
     private int modCount = 0;
+    @GuardedBy("this")
     private Node<E> last;
 
     /**
      * Метод добавления нового элемента в коллекцию.
      */
-    public void add(E value) {
+    public synchronized void add(E value) {
         Node<E> newNode = new Node(value);
         newNode.previous = last;
         last = newNode;
@@ -23,7 +28,7 @@ public class CustomLinkedList<E> implements Iterable<E> {
     /**
      * Метод получения значения по индексу. Идекс отсчитывается начиная с первого добавленного элемента.
      */
-    public E get(int index) {
+    public synchronized E get(int index) {
         Node<E> nodeToReturn = last;
         for (int i = 0; i < size - 1 - index; i++) {
             nodeToReturn = nodeToReturn.previous;
@@ -37,11 +42,11 @@ public class CustomLinkedList<E> implements Iterable<E> {
      * @return
      */
 
-    public int getSize() {
+    public synchronized int getSize() {
         return size;
     }
 
-    public E deleteLastAddedElement() {
+    public synchronized E deleteLastAddedElement() {
         CustomLinkedList.Node<E> nodeToDelete = this.last;
         E deletedDate;
         if (nodeToDelete != null) {

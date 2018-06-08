@@ -1,21 +1,26 @@
 package list;
 
-import java.util.ConcurrentModificationException;
+import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+@ThreadSafe
 public class DynamicArray<E> implements Iterable<E> {
-
-    private E[] array = (E[]) new Object[3];
-    int index = 0;
-    Integer modCount = new Integer(0);
+    @GuardedBy("this")
+    private  E[] array = (E[]) new Object[3];
+    @GuardedBy("this")
+    private int index = 0;
+    @GuardedBy("this")
+    private Integer modCount = 0;
 
 
     /**
      * Метод вставляет в начало списка данные.
      */
 
-    public void add(E value) {
+    public synchronized void add(E value) {
         if (index < array.length) {
             array[index++] = value;
         } else {
@@ -31,7 +36,7 @@ public class DynamicArray<E> implements Iterable<E> {
      * Метод получения текщего размера.
      */
 
-    public int getSize() {
+    public synchronized int getSize() {
         return index;
     }
 
@@ -40,7 +45,7 @@ public class DynamicArray<E> implements Iterable<E> {
      * Метод получения элемента по индексу.
      */
 
-    public E get(int index) {
+    public synchronized E get(int index) {
         return array[index];
     }
 
@@ -51,7 +56,7 @@ public class DynamicArray<E> implements Iterable<E> {
             int counter = 0;
 
             @Override
-            public boolean hasNext() {
+            public  boolean hasNext() {
                 boolean result = false;
                 if (modCount == savedModCount) {
                     if (index != 0 && counter < index) {
@@ -62,7 +67,7 @@ public class DynamicArray<E> implements Iterable<E> {
             }
 
             @Override
-            public E next() {
+            public  E next() {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
