@@ -1,11 +1,9 @@
 package exchange;
 
-import java.util.Comparator;
+
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
@@ -17,19 +15,11 @@ public class Exchange {
     /**
      * Field to store all buy orders grouped by Security Code.
      */
-    private Map<String, HashSet<Order>> groupedBySecCodeBuy = new HashMap();
+    private Map<String, OrderBook> ordersBuy = new HashMap();
     /**
      * Field to store all sell orders grouped by Security Code.
      */
-    private Map<String, HashSet<Order>> groupedBySecCodeSell = new HashMap();
-    /**
-     * Field to store all buy orders grouped by Price.
-     */
-    private Map<Double, HashSet<Order>> groupedByPriceBuy;
-    /**
-     * Field to store all sell orders grouped by Price.
-     */
-    private Map<Double, HashSet<Order>> groupedByPriceSell;
+    private Map<String, OrderBook> ordersSell = new HashMap();
 
 
     /**
@@ -51,14 +41,14 @@ public class Exchange {
      * @param newOrder order to add.
      */
     private void addOrder(Order newOrder) {
-        Map<String, HashSet<Order>> orders = (newOrder.getDirection() == Direction.BUY) ? groupedBySecCodeBuy : groupedBySecCodeSell;
+        Map<String, OrderBook> orders = (newOrder.getDirection() == Direction.BUY) ? ordersBuy : ordersSell;
         if (checkOppositeDirection(newOrder)) {
             if (orders.containsKey(newOrder.getSecCode())) {
-                orders.get(newOrder.getSecCode()).add(newOrder);
+                orders.get(newOrder.getSecCode()).addOrder(newOrder);
             } else {
-                HashSet<Order> list = new HashSet<>();
-                list.add(newOrder);
-                orders.put(newOrder.getSecCode(), list);
+                OrderBook book = new OrderBook();
+                book.addOrder(newOrder);
+                orders.put(newOrder.getSecCode(), book);
             }
             System.out.printf("%s was added.%s", newOrder, System.lineSeparator());
         } else {
@@ -91,14 +81,14 @@ public class Exchange {
                     newOrder.setQtty(qttyLeft);
                     needToAdd = false;
                 } else {
-                    o.setQtty(Math.abs(qttyLeft));
+                    o.setQtty(qttyLeft);
                     newOrder.setQtty(0);
                     needToAdd = false;
                     break;
                 }
             }
             if (!ordersToRemove.isEmpty()) {
-                ordersToRemove.forEach((Order o) -> deleteOrder(o));
+                ordersToRemove.forEach(this::deleteOrder);
             }
         }
         return needToAdd;
@@ -111,19 +101,17 @@ public class Exchange {
      * @return list of orders sorted by qtty in ascending order.
      */
     private TreeSet<Order> getSamePriceOrders(Order newOrder) {
-        TreeSet<Order> samePriceOrders = new TreeSet<>(Comparator.comparing(Order::getQtty).thenComparing(Order::getId));
-        Map<String, HashSet<Order>> ordersToCheck;
-        ordersToCheck = (newOrder.getDirection() == Direction.BUY) ? groupedBySecCodeSell : groupedBySecCodeBuy;
-        String secCode = newOrder.getSecCode();
-        if (!ordersToCheck.isEmpty() && ordersToCheck.get(secCode) != null) {
-            for (Order o : ordersToCheck.get(secCode)) {
-                if (o.getPrice() == newOrder.getPrice()) {
-                    samePriceOrders.add(o);
+        TreeSet<Order> orders = new TreeSet<>();
+        Map<String, OrderBook> ordersToCheck = (newOrder.getDirection() == Direction.BUY) ? ordersSell : ordersBuy;
+        if (ordersToCheck.containsKey(newOrder.getSecCode())) {
+            OrderBook book = ordersToCheck.get(newOrder.getSecCode());
+            if (book != null) {
+                if (book.getOrdersByPrice(newOrder.getPrice()) != null) {
+                    orders = book.getOrdersByPrice(newOrder.getPrice());
                 }
             }
         }
-        return samePriceOrders;
-
+        return orders;
     }
 
     /**
@@ -134,13 +122,13 @@ public class Exchange {
      */
     private boolean deleteOrder(Order order) {
         boolean result;
-        Map<String, HashSet<Order>> orders;
+        Map<String, OrderBook> orders;
         if (order.getDirection() == Direction.BUY) {
-            orders = groupedBySecCodeBuy;
+            orders = ordersBuy;
         } else {
-            orders = groupedBySecCodeSell;
+            orders = ordersSell;
         }
-        result = orders.get(order.getSecCode()).remove(order);
+        result = orders.get(order.getSecCode()).deleteOrder(order);
         String log;
         if (result) {
             log = String.format("%s was deleted.", order);
@@ -157,15 +145,13 @@ public class Exchange {
      * @param secCode
      */
     public void showDepthOfMarket(String secCode) {
-        groupedByPriceBuy = groupByPrice(secCode, groupedBySecCodeBuy);
-        groupedByPriceSell = groupByPrice(secCode, groupedBySecCodeSell);
         String leftAlignFormat = "| %-10s | %-10s | %-10s |%n";
         System.out.format("Depth of Market: %s%s", secCode, System.lineSeparator());
         System.out.format("+--------------------------------------+%n");
         System.out.format("| Buy        | Price      | Sell       |%n");
         System.out.format("+--------------------------------------+%n");
-        printOrders(leftAlignFormat, groupedByPriceBuy, Direction.BUY);
-        printOrders(leftAlignFormat, groupedByPriceSell, Direction.SELL);
+        printOrders(leftAlignFormat, Direction.BUY, ordersBuy.get(secCode));
+        printOrders(leftAlignFormat, Direction.SELL, ordersSell.get(secCode));
         System.out.format("+--------------------------------------+%n");
     }
 
@@ -173,46 +159,26 @@ public class Exchange {
      * Print collection with pre-defined format.
      *
      * @param format
-     * @param groupedByPriceSell
+     * @param orderBook
      * @param direction
      */
-    private void printOrders(String format, Map<Double, HashSet<Order>> groupedByPriceSell, int direction) {
-        if (!groupedByPriceSell.isEmpty()) {
-            for (Double d : groupedByPriceSell.keySet()) {
-                int qtty = 0;
-                for (Order o : groupedByPriceSell.get(d)) {
-                    qtty = qtty + o.getQtty();
-                }
-                if (direction == Direction.SELL) {
-                    System.out.format(format, "", String.valueOf(d), String.valueOf(qtty));
-                } else {
-                    System.out.format(format, String.valueOf(qtty), String.valueOf(d), "");
-                }
-            }
-        }
-    }
-
-    /**
-     * Gets order with pre-defined secCode and groups them by price.
-     *
-     * @param secCode - security code to select orders.
-     * @param orders  - all orders grouped by security code.
-     * @return - selected orders grouped by price.
-     */
-    private Map<Double, HashSet<Order>> groupByPrice(String secCode, Map<String, HashSet<Order>> orders) {
-        HashSet<Order> groupedBySecCode = orders.get(secCode);
-        Map<Double, HashSet<Order>> groupedByPrice = new TreeMap<>((o1, o2) -> -Double.compare(o1, o2));
-        if (groupedBySecCode != null) {
-            for (Order o : groupedBySecCode) {
-                if (groupedByPrice.containsKey(o.getPrice())) {
-                    groupedByPrice.get(o.getPrice()).add(o);
-                } else {
-                    HashSet<Order> list = new HashSet<>();
-                    list.add(o);
-                    groupedByPrice.put(o.getPrice(), list);
+    private void printOrders(String format, int direction, OrderBook orderBook) {
+        if (orderBook != null && !orderBook.getKeySet().isEmpty()) {
+            for (Double d : orderBook.getKeySet()) {
+                if (orderBook.getOrdersByPrice(d) != null) {
+                    int qtty = 0;
+                    for (Order o : orderBook.getOrdersByPrice(d)) {
+                        qtty = qtty + o.getQtty();
+                    }
+                    if (qtty > 0) {
+                        if (direction == Direction.SELL) {
+                            System.out.format(format, "", String.valueOf(d), String.valueOf(qtty));
+                        } else {
+                            System.out.format(format, String.valueOf(qtty), String.valueOf(d), "");
+                        }
+                    }
                 }
             }
         }
-        return groupedByPrice;
     }
 }
