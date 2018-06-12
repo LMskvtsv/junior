@@ -12,7 +12,7 @@ public class NonBlockingCache {
     public Base update(Base model) {
         return cache.computeIfPresent(model.getId(), (k, v) -> {
             int version = v.getVersion();
-            if (version == v.getVersion()) {
+            if (version == model.getVersion()) {
                 v.setInfo(model.getInfo());
                 v.setVersion(++version);
             } else {
