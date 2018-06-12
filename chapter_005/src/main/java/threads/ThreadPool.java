@@ -2,31 +2,34 @@ package threads;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class ThreadPool {
 
     private final List<Thread> threads = new LinkedList<>();
-    final Object lock = new Object();
+    private final LinkedBlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>();
+    private final int numberOfThreads;
 
     public ThreadPool(int nThreads) {
-        for (int i = 0; i < nThreads; i++) {
+        numberOfThreads = nThreads;
+    }
+
+    public void initAndStartAllThreads() {
+        for (int i = 0; i < numberOfThreads; i++) {
             Thread t = new Thread() {
                 @Override
                 public void run() {
                     while (!this.isInterrupted()) {
-                        Runnable nextTask = tasks.poll();
+                        Runnable nextTask;
+                        try {
+                            nextTask = tasks.poll(1_000, TimeUnit.MILLISECONDS);
+                        } catch (InterruptedException e) {
+                            System.out.printf("Thread %s was interrupted.%s", Thread.currentThread().getName(), System.lineSeparator());
+                            return;
+                        }
                         if (nextTask != null) {
                             nextTask.run();
-                        } else {
-                            synchronized (lock) {
-                                try {
-                                    lock.wait();
-                                } catch (InterruptedException e) {
-                                    return;
-                                }
-                            }
                         }
                     }
                 }
@@ -37,15 +40,13 @@ public class ThreadPool {
         }
     }
 
-    private final Queue<Runnable> tasks = new LinkedBlockingQueue<>();
-
-
     public void work(Runnable job) {
-        tasks.offer(job);
-        synchronized (lock) {
-            lock.notifyAll();
-        }
+        try {
+            tasks.offer(job, 1_000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            System.out.printf("Thread %s was interrupted.%s", Thread.currentThread().getName(), System.lineSeparator());
 
+        }
     }
 
     public void shutdown() {
@@ -53,5 +54,4 @@ public class ThreadPool {
             t.interrupt();
         }
     }
-
 }

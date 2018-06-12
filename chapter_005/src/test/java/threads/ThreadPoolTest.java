@@ -7,12 +7,13 @@ import org.junit.Test;
 @ThreadSafe
 public class ThreadPoolTest {
     @GuardedBy("this")
-    int counter = 0;
+    private int counter = 0;
 
     @Test
     public void threadPoolTest() {
         int size = Runtime.getRuntime().availableProcessors();
         ThreadPool pool = new ThreadPool(size);
+        pool.initAndStartAllThreads();
         Runnable r = new Runnable() {
             @Override
             public synchronized void run() {
