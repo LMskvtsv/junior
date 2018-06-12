@@ -26,9 +26,9 @@ public class Board {
         Cell currentCell = man.getCurrentCell();
         Queue<Cell> possibleMoves = generateAllPosiibleMoves(currentCell);
         Cell newCell = null;
-        if(possibleMoves.size() >0) {
+        if (possibleMoves.size() > 0) {
             newCell = possibleMoves.poll();
-        } else{
+        } else {
             System.out.printf("Game over for %s! There are no possible moves%s", Thread.currentThread().getName(), System.lineSeparator());
             Thread.currentThread().interrupt();
         }
@@ -45,9 +45,9 @@ public class Board {
                 if (board[newCell.getW()][newCell.getH()].isLocked()) {
                     System.out.println("Thread " + Thread.currentThread().getName() + ".");
                     System.out.printf("Cell [%d][%d] is still locked, choosing another one.%s", newCell.getW(), newCell.getH(), System.lineSeparator());
-                    if(possibleMoves.size() > 0) {
+                    if (possibleMoves.size() > 0) {
                         newCell = possibleMoves.poll();
-                    } else{
+                    } else {
                         System.out.printf("Game over for %s! There are no possible moves%s", Thread.currentThread().getName(), System.lineSeparator());
                         Thread.currentThread().interrupt();
                     }

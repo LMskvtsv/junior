@@ -37,9 +37,11 @@ public class Game {
         };
         blackBomberManMove.setName("Black bomberman");
         blackBomberManMove.start();
-        while(!whiteBomberManMove.isInterrupted() || !blackBomberManMove.isInterrupted()){
-          // watching the game
+        boolean needToContinue = false;
+        while (!whiteBomberManMove.isInterrupted() || !blackBomberManMove.isInterrupted()) {
+            needToContinue = true;
+            // watching the game
         }
-        System.out.println("Game over!");
+        System.out.println("Game over! " + needToContinue);
     }
 }

@@ -81,7 +81,7 @@ public class Exchange {
                     newOrder.setQtty(qttyLeft);
                     needToAdd = false;
                 } else {
-                    o.setQtty(qttyLeft);
+                    o.setQtty(Math.abs(qttyLeft));
                     newOrder.setQtty(0);
                     needToAdd = false;
                     break;

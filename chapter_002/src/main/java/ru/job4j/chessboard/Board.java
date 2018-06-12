@@ -11,6 +11,7 @@ class Board {
 
     /**
      * Adds figure on the board. There will be a message in case there is no empty space on the board.
+     *
      * @param figure - figure to add.
      */
     void add(Figure figure) {
@@ -23,11 +24,12 @@ class Board {
 
     /**
      * Move figure on the the board from starting position to destination position.
+     *
      * @param source - starting position
-     * @param dest - destination position
+     * @param dest   - destination position
      * @return true - if moving was successful.
      * @throws ImpossibleMoveException - in case destination cell was not found in possibleMoves array.
-     * @throws OccupiedWayException - in case there is another figure on the way (middle way and destination point).
+     * @throws OccupiedWayException    - in case there is another figure on the way (middle way and destination point).
      * @throws FigureNotFoundException - in case board or cell is empty.
      */
     boolean move(Cell source, Cell dest) throws ImpossibleMoveException, OccupiedWayException, FigureNotFoundException {
