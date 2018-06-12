@@ -9,13 +9,16 @@ import java.util.Queue;
 @ThreadSafe
 public class SimpleBlockingQueue<T> {
 
-    @GuardedBy("this")
     private Queue<T> queue = new LinkedList<>();
+    @GuardedBy("this")
     private final Object lock = new Object();
+
     private final int maxSize = 5;
 
     public int getSize() {
-        return queue.size();
+        synchronized (lock) {
+            return queue.size();
+        }
     }
 
     public void offer(T value) throws InterruptedException {
