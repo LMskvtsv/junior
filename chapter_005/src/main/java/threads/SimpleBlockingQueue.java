@@ -8,9 +8,8 @@ import java.util.Queue;
 
 @ThreadSafe
 public class SimpleBlockingQueue<T> {
-
+    @GuardedBy("lock")
     private Queue<T> queue = new LinkedList<>();
-    @GuardedBy("this")
     private final Object lock = new Object();
 
     private final int maxSize = 5;
