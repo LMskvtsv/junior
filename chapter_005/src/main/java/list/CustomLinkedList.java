@@ -11,7 +11,7 @@ public class CustomLinkedList<E> implements Iterable<E> {
     @GuardedBy("this")
     private int size = 0;
     @GuardedBy("this")
-    private int modCount = 0;
+    private volatile int modCount = 0;
     @GuardedBy("this")
     private Node<E> last;
 

@@ -11,9 +11,9 @@ public class DynamicArray<E> implements Iterable<E> {
     @GuardedBy("this")
     private  E[] array = (E[]) new Object[3];
     @GuardedBy("this")
-    private int index = 0;
+    private volatile int index = 0;
     @GuardedBy("this")
-    private Integer modCount = 0;
+    private volatile Integer modCount = 0;
 
 
     /**
