@@ -2,6 +2,7 @@ package tree;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Queue;
@@ -44,7 +45,18 @@ public class SimpleTree<E extends Comparable<E>> implements Iterable {
         if (!rsl.isPresent()) {
             this.root.leaves().add(new Node(parent));
         }
-        return rsl.get().leaves().add(new Node(child));
+        List<Node<E>> list = rsl.get().leaves();
+        boolean hasSuchElement = false;
+        for (Node node : list) {
+            if (node.eqValue(child)) {
+                hasSuchElement = true;
+                break;
+            }
+        }
+        if (!hasSuchElement) {
+            list.add(new Node(child));
+        }
+        return !hasSuchElement;
     }
 
     public Optional<Node<E>> findBy(E value) {
@@ -65,8 +77,8 @@ public class SimpleTree<E extends Comparable<E>> implements Iterable {
     }
 
     @Override
-    public Iterator iterator() {
-        return new Iterator() {
+    public Iterator<E> iterator() {
+        return new Iterator<E>() {
             Queue<Node<E>> data = new LinkedList<>();
 
             {
@@ -75,11 +87,7 @@ public class SimpleTree<E extends Comparable<E>> implements Iterable {
 
             @Override
             public boolean hasNext() {
-                boolean result = false;
-                if (!data.isEmpty()) {
-                    result = true;
-                }
-                return result;
+                return !data.isEmpty();
             }
 
             @Override
@@ -89,9 +97,7 @@ public class SimpleTree<E extends Comparable<E>> implements Iterable {
                     throw new NoSuchElementException();
                 } else {
                     el = data.poll();
-                    for (Node<E> child : el.leaves()) {
-                        data.offer(child);
-                    }
+                    data.addAll(el.leaves());
                 }
                 return el.getValue();
             }
