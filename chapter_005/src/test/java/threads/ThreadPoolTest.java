@@ -20,30 +20,19 @@ public class ThreadPoolTest {
                 System.out.println(++counter + " current thread " + Thread.currentThread().getName());
             }
         };
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
-        pool.work(r);
+        try {
+            pool.work(r);
+            pool.work(r);
+            pool.work(r);
+            pool.work(r);
+            pool.work(r);
+            pool.work(r);
+            pool.work(r);
+            pool.work(r);
+            pool.work(r);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         pool.shutdown();
     }
 }

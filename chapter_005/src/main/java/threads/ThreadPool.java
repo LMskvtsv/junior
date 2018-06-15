@@ -40,13 +40,8 @@ public class ThreadPool {
         }
     }
 
-    public void work(Runnable job) {
-        try {
+    public void work(Runnable job) throws InterruptedException{
             tasks.offer(job, 1_000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            System.out.printf("Thread %s was interrupted.%s", Thread.currentThread().getName(), System.lineSeparator());
-
-        }
     }
 
     public void shutdown() {

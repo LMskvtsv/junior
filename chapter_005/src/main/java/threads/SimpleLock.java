@@ -14,7 +14,7 @@ public class SimpleLock {
     }
 
     public synchronized void unlock() {
-        if (currentThread != null && Thread.currentThread().getId() == currentThread.getId()) {
+        if (currentThread != null && Thread.currentThread() == currentThread) {
             isLocked = false;
             notifyAll();
         } else {
