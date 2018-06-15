@@ -2,9 +2,9 @@ package threads.bomberman;
 
 public class Game {
     public static void main(String[] args) {
-        final Board board = new Board(5, 5);
+        final Board board = new Board(4, 4);
         final BomberMan white = new BomberMan(new Cell(0, 0), "White");
-        final BomberMan black = new BomberMan(new Cell(4, 4), "Black");
+        final BomberMan black = new BomberMan(new Cell(3, 3), "Black");
         board.init();
         Thread whiteBomberManMove = new Thread() {
             @Override
@@ -37,11 +37,11 @@ public class Game {
         };
         blackBomberManMove.setName("Black bomberman");
         blackBomberManMove.start();
-        boolean needToContinue = false;
+        boolean needToContinue = true;
         while (!whiteBomberManMove.isInterrupted() || !blackBomberManMove.isInterrupted()) {
-            needToContinue = true;
             // watching the game
         }
+        needToContinue = false;
         System.out.println("Game over! " + needToContinue);
     }
 }

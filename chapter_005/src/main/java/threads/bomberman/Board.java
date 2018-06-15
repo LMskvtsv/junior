@@ -3,28 +3,39 @@ package threads.bomberman;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Bomberman game, initial version.
+ */
 public class Board {
 
-    private final Object lock = new Object();
-
-    private final Cell[][] board;
+    private final ReentrantLock[][] board;
 
     public Board(int width, int height) {
-        this.board = new Cell[width][height];
+        this.board = new ReentrantLock[width][height];
     }
 
+    /**
+     * Board initialisation with reentrant locks for every cell.
+     */
     public void init() {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                board[i][j] = new Cell(i, j);
+                board[i][j] = new ReentrantLock();
             }
         }
     }
 
+    /**
+     * Checks if possible move is available. If possible move is locked by another character, then bomberman will wait 500 ms and new move will be
+     * chosen.
+     * @param man - bomberman to move.
+     */
     public void move(BomberMan man) {
         Cell currentCell = man.getCurrentCell();
-        Queue<Cell> possibleMoves = generateAllPosiibleMoves(currentCell);
+        Queue<Cell> possibleMoves = generateAllPossibleMoves(currentCell);
         Cell newCell = null;
         if (possibleMoves.size() > 0) {
             newCell = possibleMoves.poll();
@@ -32,35 +43,26 @@ public class Board {
             System.out.printf("Game over for %s! There are no possible moves%s", Thread.currentThread().getName(), System.lineSeparator());
             Thread.currentThread().interrupt();
         }
-        synchronized (lock) {
-            System.out.println("Thread " + Thread.currentThread().getName() + " is in critical section.");
-            while (board[newCell.getW()][newCell.getH()].isLocked()) {
-                try {
-                    lock.wait(500);
-                    System.out.println("Thread " + Thread.currentThread().getName() + ".");
-                    System.out.printf("Cell [%d][%d] is locked, waiting 500 ms.%s", newCell.getW(), newCell.getH(), System.lineSeparator());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (board[newCell.getW()][newCell.getH()].isLocked()) {
-                    System.out.println("Thread " + Thread.currentThread().getName() + ".");
-                    System.out.printf("Cell [%d][%d] is still locked, choosing another one.%s", newCell.getW(), newCell.getH(), System.lineSeparator());
-                    if (possibleMoves.size() > 0) {
-                        newCell = possibleMoves.poll();
-                    } else {
-                        System.out.printf("Game over for %s! There are no possible moves%s", Thread.currentThread().getName(), System.lineSeparator());
-                        Thread.currentThread().interrupt();
-                    }
-                    System.out.printf("New cell [%d][%d] was chosen.%s", newCell.getW(), newCell.getH(), System.lineSeparator());
+        ReentrantLock newLock = board[newCell.getW()][newCell.getH()];
+        ReentrantLock oldLock = board[currentCell.getW()][currentCell.getH()];
+
+        try {
+            while(!newLock.tryLock(500, TimeUnit.MILLISECONDS)) {
+                System.out.printf("Thread %s: cell [%d][%d] is still locked, choosing another one.%s", Thread.currentThread().getName(), newCell.getW(), newCell.getH(), System.lineSeparator());
+                if (possibleMoves.size() > 0) {
+                    newCell = possibleMoves.poll();
+                    newLock = board[newCell.getW()][newCell.getH()];
                 } else {
-                    System.out.println("Thread " + Thread.currentThread().getName() + ".");
-                    System.out.printf("Cell [%d][%d] is free now, go for it.%s", newCell.getW(), newCell.getH(), System.lineSeparator());
-                    return;
+                    System.out.printf("Game over for %s! There are no possible moves%s", Thread.currentThread().getName(), System.lineSeparator());
+                    Thread.currentThread().interrupt();
                 }
+                System.out.printf("Thread %s: new cell [%d][%d] was chosen.%s", Thread.currentThread().getName(), newCell.getW(), newCell.getH(), System.lineSeparator());
             }
-            newCell.setLocked(true);
-            board[currentCell.getW()][currentCell.getH()].setLocked(false);
-            board[newCell.getW()][newCell.getH()] = newCell;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(oldLock.isLocked()) {
+            oldLock.unlock();
         }
         man.setCurrentCell(newCell);
         System.out.printf("BomberMan %s moved from cell[%d][%d] to cell [%d][%d]%s",
@@ -72,7 +74,12 @@ public class Board {
                 System.lineSeparator());
     }
 
-    private Queue<Cell> generateAllPosiibleMoves(Cell currentCell) {
+    /**
+     * Calculates possible moves in accordance with current position.
+     * @param currentCell
+     * @return
+     */
+    private Queue<Cell> generateAllPossibleMoves(Cell currentCell) {
         Queue<Cell> possibleMoves = new LinkedList<Cell>();
         possibleMoves.add(new Cell(currentCell.getW() + 1, currentCell.getH()));
         possibleMoves.add(new Cell(currentCell.getW(), currentCell.getH() + 1));
