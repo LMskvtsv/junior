@@ -2,6 +2,7 @@ package threads.bomberman;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -31,61 +32,52 @@ public class Board {
     /**
      * Checks if possible move is available. If possible move is locked by another character, then bomberman will wait 500 ms and new move will be
      * chosen.
-     * @param man - bomberman to move.
+     *
+     * @param source - move from
+     * @param dest   - move to
      */
-    public void move(BomberMan man) {
-        Cell currentCell = man.getCurrentCell();
-        Queue<Cell> possibleMoves = generateAllPossibleMoves(currentCell);
-        Cell newCell = null;
-        if (possibleMoves.size() > 0) {
-            newCell = possibleMoves.poll();
-        } else {
-            System.out.printf("Game over for %s! There are no possible moves%s", Thread.currentThread().getName(), System.lineSeparator());
-            Thread.currentThread().interrupt();
-        }
-        ReentrantLock newLock = board[newCell.getW()][newCell.getH()];
-        ReentrantLock oldLock = board[currentCell.getW()][currentCell.getH()];
-
-        try {
-            while(!newLock.tryLock(500, TimeUnit.MILLISECONDS)) {
-                System.out.printf("Thread %s: cell [%d][%d] is still locked, choosing another one.%s", Thread.currentThread().getName(), newCell.getW(), newCell.getH(), System.lineSeparator());
-                if (possibleMoves.size() > 0) {
-                    newCell = possibleMoves.poll();
-                    newLock = board[newCell.getW()][newCell.getH()];
-                } else {
-                    System.out.printf("Game over for %s! There are no possible moves%s", Thread.currentThread().getName(), System.lineSeparator());
-                    Thread.currentThread().interrupt();
+    public boolean move(Cell source, Cell dest) {
+        boolean result = true;
+        Queue<Cell> possibleMoves = generateAllPossibleMoves(source);
+        if (possibleMoves.contains(dest)) {
+            ReentrantLock newLock = board[dest.getW()][dest.getH()];
+            ReentrantLock oldLock = board[source.getW()][source.getH()];
+            try {
+                while (!newLock.tryLock(500, TimeUnit.MILLISECONDS)) {
+                    System.out.printf("Thread %s: cell [%d][%d] is still locked, choose another one.%s",
+                            Thread.currentThread(),
+                            dest.getW(),
+                            dest.getH(),
+                            System.lineSeparator());
+                    result = false;
+                    break;
                 }
-                System.out.printf("Thread %s: new cell [%d][%d] was chosen.%s", Thread.currentThread().getName(), newCell.getW(), newCell.getH(), System.lineSeparator());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            if (result && oldLock.isLocked()) {
+                oldLock.unlock();
+            }
+        } else {
+            System.out.printf("Impossible move, choose another one.%s", System.lineSeparator());
+            result = false;
         }
-        if(oldLock.isLocked()) {
-            oldLock.unlock();
-        }
-        man.setCurrentCell(newCell);
-        System.out.printf("BomberMan %s moved from cell[%d][%d] to cell [%d][%d]%s",
-                man.getName(),
-                currentCell.getW(),
-                currentCell.getH(),
-                newCell.getW(),
-                newCell.getH(),
-                System.lineSeparator());
+        return result;
     }
 
     /**
      * Calculates possible moves in accordance with current position.
+     *
      * @param currentCell
      * @return
      */
-    private Queue<Cell> generateAllPossibleMoves(Cell currentCell) {
-        Queue<Cell> possibleMoves = new LinkedList<Cell>();
+    public Queue<Cell> generateAllPossibleMoves(Cell currentCell) {
+        Queue<Cell> possibleMoves = new LinkedList<>();
         possibleMoves.add(new Cell(currentCell.getW() + 1, currentCell.getH()));
         possibleMoves.add(new Cell(currentCell.getW(), currentCell.getH() + 1));
         possibleMoves.add(new Cell(currentCell.getW() - 1, currentCell.getH()));
         possibleMoves.add(new Cell(currentCell.getW(), currentCell.getH() - 1));
-        ArrayList<Cell> movesToRemove = new ArrayList(8);
+        ArrayList<Cell> movesToRemove = new ArrayList<>();
         for (Cell cell : possibleMoves) {
             if (cell.getW() < 0
                     || cell.getW() >= board.length

@@ -1,5 +1,7 @@
 package threads.bomberman;
 
+import java.util.Objects;
+
 public class Cell {
 
     private final int w;
@@ -18,13 +20,21 @@ public class Cell {
         return h;
     }
 
-    private boolean isLocked = false;
-
-    public boolean isLocked() {
-        return isLocked;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Cell cell = (Cell) o;
+        return w == cell.w &&
+                h == cell.h;
     }
 
-    public void setLocked(boolean locked) {
-        isLocked = locked;
+    @Override
+    public int hashCode() {
+        return Objects.hash(w, h);
     }
 }
