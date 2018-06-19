@@ -44,7 +44,7 @@ public class BankVisitors {
     public String returnMaxVisitPeriods() {
         for (Person p: visitors) {
             for (Long l: timeLine.keySet()) {
-                if (l >= p.getEnter() && l <= p.leave) {
+                if (l >= p.getEnter() && l <= p.getLeave()) {
                     timeLine.computeIfPresent(l, (k, v) -> (v = v + 1));
                 }
             }

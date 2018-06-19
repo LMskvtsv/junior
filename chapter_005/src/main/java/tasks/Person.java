@@ -1,8 +1,20 @@
 package tasks;
 
 public class Person {
-     long enter;
-     long leave;
+    private String name = "";
+    private long enter;
+    private long leave;
+
+    public String appendName(int s){
+        StringBuilder builder = new StringBuilder(name);
+        builder.append(s);
+        name = builder.toString();
+        return name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public long getEnter() {
         return enter;
