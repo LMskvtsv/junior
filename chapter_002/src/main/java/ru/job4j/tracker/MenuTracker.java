@@ -12,7 +12,7 @@ class DeleteItem extends BaseAction {
         System.out.println("------------ Удаление заявки --------------");
         String id = input.ask("Введите идентификатор заявки, которую нужно удалить:");
         System.out.println("Введен идентификатор: " + id);
-        if (tracker.delete(id)) {
+        if (tracker.delete(Integer.valueOf(id))) {
             System.out.println("------------ Заявка с Id : " + id + " удалена -----------");
         } else {
             System.out.println("------------ Заявка с Id : " + id + " не найдена -----------");
@@ -108,8 +108,8 @@ public class MenuTracker {
             String desc = input.ask("Введите новое описание заявки :");
             System.out.println("Введено описание: " + desc);
             Item item = new Item(name, desc);
-            item.setId(id);
-            if (tracker.replace(id, item)) {
+            item.setId(Integer.valueOf(id));
+            if (tracker.replace(Integer.valueOf(id), item)) {
                 System.out.println("------------ Заявка с Id : " + id + " отредактирована -----------");
             } else {
                 System.out.println("------------ Заявка с Id : " + id + " не найдена -----------");
@@ -128,7 +128,7 @@ public class MenuTracker {
             System.out.println("------------ Поиск заявки по идентификатору --------------");
             String id = input.ask("Введите идентификатор заявки, которую нужно найти:");
             System.out.println("Введен идентификатор: " + id);
-            Item result = tracker.findById(id);
+            Item result = tracker.findById(Integer.valueOf(id));
             if (result != null) {
                 System.out.println("------------ Заявка с Id : " + id + " найдена -----------");
                 System.out.println("Имя:" + result.getName());

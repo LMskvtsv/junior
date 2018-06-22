@@ -1,11 +1,14 @@
 package ru.job4j.tracker;
 
+import java.sql.Timestamp;
+import java.util.Objects;
+
 public class Item {
 
-    private String id;
+    private int id;
     private String name;
     private String desc;
-    private long created;
+    private Timestamp created;
     private String[] comments;
 
     public Item(String name, String desc) {
@@ -13,11 +16,11 @@ public class Item {
         this.desc = desc;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -30,11 +33,11 @@ public class Item {
         return desc;
     }
 
-    public long getCreated() {
+    public Timestamp getCreated() {
         return created;
     }
 
-    public void setCreated(long created) {
+    public void setCreated(Timestamp created) {
         this.created = created;
     }
 
@@ -44,5 +47,22 @@ public class Item {
 
     public void setComments(String[] comments) {
         this.comments = comments;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Item item = (Item) o;
+        return id == item.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
