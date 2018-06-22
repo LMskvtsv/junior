@@ -5,7 +5,7 @@ public class Person {
     private long enter;
     private long leave;
 
-    public String appendName(int s){
+    public String appendName(int s) {
         StringBuilder builder = new StringBuilder(name);
         builder.append(s);
         name = builder.toString();
