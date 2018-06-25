@@ -1,7 +1,12 @@
 package ru.job4j.tracker;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,10 +17,23 @@ import static org.junit.Assert.assertThat;
 public class TrackerTest {
 
     private String configFileName = "DataBase.cfg";
+    private String sqlUrl = "jdbc:sqlite:tracker.db";
+    Tracker tracker;
+
+    @Before
+    public void setUp() {
+        tracker = new Tracker(configFileName);
+        PreparedStatement ps;
+        try (Connection conn = DriverManager.getConnection(sqlUrl)) {
+            ps = conn.prepareStatement("delete from items");
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void addItem() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item1", "desc1");
         Item item2 = new Item("item2", "desc2");
         Item item3 = new Item("item3", "desc3");
@@ -33,7 +51,6 @@ public class TrackerTest {
 
     @Test
     public void replaceItem() {
-        Tracker tracker = new Tracker(configFileName);
         Item previous = new Item("item1", "desc1");
         Item modified = new Item("item2", "desc2");
         modified.setCreated(new Timestamp(System.currentTimeMillis()));
@@ -47,7 +64,6 @@ public class TrackerTest {
 
     @Test
     public void deleteMiddleItem() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item1", "desc1");
         Item item2 = new Item("item2", "desc2");
         Item item3 = new Item("item3", "desc3");
@@ -67,7 +83,6 @@ public class TrackerTest {
 
     @Test
     public void deleteFirstItem() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item1", "desc1");
         Item item2 = new Item("item2", "desc2");
         Item item3 = new Item("item3", "desc3");
@@ -87,7 +102,6 @@ public class TrackerTest {
 
     @Test
     public void deleteLastItem() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item1", "desc1");
         Item item2 = new Item("item2", "desc2");
         Item item3 = new Item("item3", "desc3");
@@ -106,7 +120,6 @@ public class TrackerTest {
 
     @Test
     public void findAllItems() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item1", "desc1");
         Item item2 = new Item("item2", "desc2");
         Item item3 = new Item("item3", "desc3");
@@ -124,7 +137,6 @@ public class TrackerTest {
 
     @Test
     public void findItemByNameSingle() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item1", "desc1");
         Item item2 = new Item("item2", "desc2");
         Item item3 = new Item("item3", "desc3");
@@ -141,7 +153,6 @@ public class TrackerTest {
 
     @Test
     public void findItemByNameMultiple() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item2", "desc1");
         Item item2 = new Item("item2", "desc2");
         Item item3 = new Item("item3", "desc3");
@@ -159,7 +170,6 @@ public class TrackerTest {
 
     @Test
     public void findItemById() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item2", "desc1");
         Item item2 = new Item("item2", "desc2");
         Item item3 = new Item("item3", "desc3");

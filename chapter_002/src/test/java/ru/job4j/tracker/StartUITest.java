@@ -6,6 +6,10 @@ import org.junit.After;
 
 import java.io.PrintStream;
 import java.io.ByteArrayOutputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import static org.hamcrest.core.Is.is;
@@ -16,10 +20,21 @@ public class StartUITest {
 
     private PrintStream stdout = System.out;
     private ByteArrayOutputStream out = new ByteArrayOutputStream();
+
     private String configFileName = "DataBase.cfg";
+    private String sqlUrl = "jdbc:sqlite:tracker.db";
+    Tracker tracker;
 
     @Before
     public void setUp() {
+        tracker = new Tracker(configFileName);
+        PreparedStatement ps;
+        try (Connection conn = DriverManager.getConnection(sqlUrl)) {
+            ps = conn.prepareStatement("delete from items");
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         System.setOut(new PrintStream(this.out));
     }
 
@@ -31,7 +46,6 @@ public class StartUITest {
 
     @Test
     public void addItem() {
-        Tracker tracker = new Tracker(configFileName);
         Input stubInput = new StubInput(new String[]{"0", "name1", "desc1", "n", "0", "name2", "desc2", "y"});
         new StartUI(stubInput, tracker).init();
         assertThat(tracker.findAll().get(0).getName(), is("name1"));
@@ -42,7 +56,6 @@ public class StartUITest {
 
     @Test
     public void replaceItem() {
-        Tracker tracker = new Tracker(configFileName);
         Item origin = new Item("name3", "desc3");
         tracker.add(origin);
         Input stubInput = new StubInput(new String[]{"2", String.valueOf(origin.getId()), "name4", "desc4", "y"});
@@ -53,17 +66,15 @@ public class StartUITest {
 
     @Test
     public void cannotFindToReplace() {
-        Tracker tracker = new Tracker(configFileName);
         Item origin = new Item("name3", "desc3");
         tracker.add(origin);
-        Input stubInput = new StubInput(new String[]{"2", "fake_id", "name4", "desc4", "y"});
+        Input stubInput = new StubInput(new String[]{"2", "93094809", "name4", "desc4", "y"});
         new StartUI(stubInput, tracker).init();
         assertNull(tracker.findById(5686858));
     }
 
     @Test
     public void deleteItem() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("name5", "desc5");
         tracker.add(item1);
         Item item2 = new Item("name6", "desc6");
@@ -76,10 +87,9 @@ public class StartUITest {
 
     @Test
     public void cannotFindToDelete() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("name5", "desc5");
         tracker.add(item1);
-        Input stubInput = new StubInput(new String[]{"3", "fake_id", "n", "1", "y"});
+        Input stubInput = new StubInput(new String[]{"3", "00874837", "n", "1", "y"});
         new StartUI(stubInput, tracker).init();
         assertThat(tracker.findAll().size(), is(1));
         assertThat(tracker.findAll().get(0).getId(), is(item1.getId()));
@@ -87,7 +97,6 @@ public class StartUITest {
 
     @Test
     public void findAllItems() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item1", "desc1");
         Item item2 = new Item("item2", "desc2");
         Item item3 = new Item("item3", "desc3");
@@ -107,7 +116,6 @@ public class StartUITest {
 
     @Test
     public void findAllEmptyTracker() {
-        Tracker tracker = new Tracker(configFileName);
         ArrayList<Item> expected = new ArrayList<>();
         Input stubInput = new StubInput(new String[]{"1", "y"});
         new StartUI(stubInput, tracker).init();
@@ -116,7 +124,6 @@ public class StartUITest {
 
     @Test
     public void findItemByNameSingle() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item1", "desc1");
         Item item2 = new Item("item2", "desc2");
         Item item3 = new Item("item3", "desc3");
@@ -135,7 +142,6 @@ public class StartUITest {
 
     @Test
     public void findItemByNameMultiple() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item2", "desc1");
         Item item2 = new Item("item2", "desc2");
         Item item3 = new Item("item3", "desc3");
@@ -155,7 +161,6 @@ public class StartUITest {
 
     @Test
     public void cannotFindByName() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item1", "desc1");
         Item item2 = new Item("item2", "desc2");
         Item item3 = new Item("item3", "desc3");
@@ -173,7 +178,6 @@ public class StartUITest {
 
     @Test
     public void findItemByID() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item1", "desc1");
         Item item2 = new Item("item2", "desc2");
         Item item3 = new Item("item3", "desc3");
@@ -190,7 +194,6 @@ public class StartUITest {
 
     @Test
     public void cannotFindByID() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item1", "desc1");
         Item item2 = new Item("item2", "desc2");
         Item item3 = new Item("item3", "desc3");
@@ -199,7 +202,7 @@ public class StartUITest {
         tracker.add(item2);
         tracker.add(item3);
 
-        Input stubInput = new StubInput(new String[]{"4", "fake_id", "y"});
+        Input stubInput = new StubInput(new String[]{"4", "903947843", "y"});
         new StartUI(stubInput, tracker).init();
         Item actual = tracker.findById(878878);
         assertNull(actual);
@@ -207,7 +210,6 @@ public class StartUITest {
 
     @Test
     public void consoleOutputShowAll() {
-        Tracker tracker = new Tracker(configFileName);
         Item item1 = new Item("item1", "desc1");
         Item item2 = new Item("item2", "desc2");
 
@@ -238,7 +240,6 @@ public class StartUITest {
 
     @Test
     public void consoleOutputShowAllEmptyTracker() {
-        Tracker tracker = new Tracker(configFileName);
         Input stubInput = new StubInput(new String[]{"1", "y"});
         new StartUI(stubInput, tracker).init();
         assertThat(

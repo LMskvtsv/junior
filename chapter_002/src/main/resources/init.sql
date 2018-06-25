@@ -1,13 +1,13 @@
-CREATE TABLE IF NOT EXISTS public.items
-(	id serial primary key,
+CREATE TABLE IF NOT EXISTS items
+(	  id integer primary key autoincrement,
     name varchar(200),
     description varchar (200),
-    created timestamp default now()
+    created TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS public.comments
-(	id serial primary key,
+CREATE TABLE IF NOT EXISTS comments
+(	  id integer primary key autoincrement,
     comment varchar(500),
- 	item_id integer references items(id),
-    created timestamp default now()
+ 	  item_id integer references items(id),
+    created TIMESTAMP
 );
