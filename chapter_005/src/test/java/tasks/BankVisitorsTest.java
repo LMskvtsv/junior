@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -12,8 +13,8 @@ public class BankVisitorsTest {
 
     @Test
     public void whenTwoMaxPeriodsThanTwoAreShown() {
-
         Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("Asia/Nicosia"));
         calendar.set(2018, Calendar.JUNE, 15);
         calendar.set(Calendar.HOUR_OF_DAY, 8);
         calendar.set(Calendar.MINUTE, 0);
