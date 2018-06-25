@@ -76,9 +76,11 @@ public class BankVisitors {
 
         StringBuilder builder = new StringBuilder("Periods with max visitors:" + System.lineSeparator());
         for (Map.Entry<Long, Long> entry: periods.entrySet()) {
-            builder.append(new Date(entry.getKey()));
+            calendar.setTime(new Date(entry.getKey()));
+            builder.append(calendar.getTime());
             builder.append(" - ");
-            builder.append(new Date(entry.getValue()));
+            calendar.setTime(new Date(entry.getValue()));
+            builder.append(calendar.getTime());
             builder.append(System.lineSeparator());
         }
         return builder.toString();
