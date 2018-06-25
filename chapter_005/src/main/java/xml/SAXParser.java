@@ -1,4 +1,4 @@
-package xmlJDBC;
+package xml;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

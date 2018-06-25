@@ -1,4 +1,4 @@
-package xmlJDBC;
+package xml;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;

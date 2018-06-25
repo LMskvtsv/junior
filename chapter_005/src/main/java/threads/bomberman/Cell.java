@@ -29,8 +29,8 @@ public class Cell {
             return false;
         }
         Cell cell = (Cell) o;
-        return w == cell.w &&
-                h == cell.h;
+        return w == cell.w
+                && h == cell.h;
     }
 
     @Override

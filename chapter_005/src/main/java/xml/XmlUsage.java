@@ -1,6 +1,4 @@
-package xmlJDBC;
-
-import com.sun.xml.internal.txw2.annotation.XmlElement;
+package xml;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -37,7 +35,7 @@ public class XmlUsage {
         }
     }
 
-    @XmlElement
+    @XmlRootElement
     public static class Entry {
         private long value;
 

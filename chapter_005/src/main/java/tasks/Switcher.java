@@ -13,7 +13,7 @@ public class Switcher {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
                         while (!lock.tryLock()) {
-                            //waiting
+                            System.out.println("waiting...");
                         }
                         for (int i = 0; i < 10; i++) {
                             System.out.println(person.appendName(1));
@@ -40,7 +40,7 @@ public class Switcher {
                     try {
 
                         while (!lock.tryLock()) {
-                            //waiting
+                            System.out.println("waiting...");
                         }
                         for (int i = 0; i < 10; i++) {
                             System.out.println(person.appendName(2));

@@ -1,4 +1,4 @@
-package xmlJDBC;
+package xml;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +17,13 @@ public class StoreSQL {
 
     private String sqlUrl;
     private Properties properties = new Properties();
-    private static final Logger log = LoggerFactory.getLogger(StoreSQL.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StoreSQL.class);
 
     public StoreSQL(String fileName) {
         try {
             properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName));
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
         }
         sqlUrl = properties.getProperty("Database.URL");
     }
@@ -52,7 +52,7 @@ public class StoreSQL {
             }
 
         } catch (SQLException e) {
-            if(connection != null){
+            if (connection != null) {
                 try {
                     connection.rollback();
                 } catch (SQLException e1) {

@@ -40,12 +40,12 @@ public class ThreadPool {
         }
     }
 
-    public void work(Runnable job) throws InterruptedException{
-            tasks.offer(job, 1_000, TimeUnit.MILLISECONDS);
+    public void work(Runnable job) throws InterruptedException {
+        tasks.offer(job, 1_000, TimeUnit.MILLISECONDS);
     }
 
     public void shutdown() {
-        for (Thread t : threads) {
+        for (Thread t: threads) {
             t.interrupt();
         }
     }
