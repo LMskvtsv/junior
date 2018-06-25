@@ -26,7 +26,6 @@ public class BankVisitors {
      * Initiates map with 1 minute periods within time interval 8:00 - 20:00.
      */
     public void init() {
-        calendar.setTimeZone(TimeZone.getTimeZone("Asia/Nicosia"));
         calendar.set(2018, Calendar.JUNE, 15);
         calendar.set(Calendar.HOUR_OF_DAY, 8);
         calendar.set(Calendar.MINUTE, 0);
@@ -77,15 +76,14 @@ public class BankVisitors {
         StringBuilder builder = new StringBuilder("Periods with max visitors:" + System.lineSeparator());
         for (Map.Entry<Long, Long> entry: periods.entrySet()) {
             calendar.setTime(new Date(entry.getKey()));
-            calendar.setTimeZone(TimeZone.getTimeZone("Asia/Nicosia"));
             builder.append(calendar.getTime());
             builder.append(" - ");
             calendar.setTime(new Date(entry.getValue()));
-            calendar.setTimeZone(TimeZone.getTimeZone("Asia/Nicosia"));
             builder.append(calendar.getTime());
             builder.append(System.lineSeparator());
         }
         System.out.println(calendar.getTimeZone());
+        System.out.println(builder.toString());
         return builder.toString();
     }
 }
