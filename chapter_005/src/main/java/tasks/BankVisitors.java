@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -25,6 +26,7 @@ public class BankVisitors {
      * Initiates map with 1 minute periods within time interval 8:00 - 20:00.
      */
     public void init() {
+        calendar.setTimeZone(TimeZone.getTimeZone("Asia/Nicosia"));
         calendar.set(2018, Calendar.JUNE, 15);
         calendar.set(Calendar.HOUR_OF_DAY, 8);
         calendar.set(Calendar.MINUTE, 0);
