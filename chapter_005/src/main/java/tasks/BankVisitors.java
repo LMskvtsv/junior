@@ -77,12 +77,15 @@ public class BankVisitors {
         StringBuilder builder = new StringBuilder("Periods with max visitors:" + System.lineSeparator());
         for (Map.Entry<Long, Long> entry: periods.entrySet()) {
             calendar.setTime(new Date(entry.getKey()));
+            calendar.setTimeZone(TimeZone.getTimeZone("Asia/Nicosia"));
             builder.append(calendar.getTime());
             builder.append(" - ");
             calendar.setTime(new Date(entry.getValue()));
+            calendar.setTimeZone(TimeZone.getTimeZone("Asia/Nicosia"));
             builder.append(calendar.getTime());
             builder.append(System.lineSeparator());
         }
+        System.out.println(calendar.getTimeZone());
         return builder.toString();
     }
 }
