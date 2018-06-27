@@ -1,7 +1,5 @@
 package xml;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -17,13 +15,12 @@ public class StoreSQL {
 
     private String sqlUrl;
     private Properties properties = new Properties();
-    private static final Logger LOG = LoggerFactory.getLogger(StoreSQL.class);
 
     public StoreSQL(String fileName) {
         try {
             properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName));
         } catch (IOException e) {
-            LOG.error(e.getMessage(), e);
+           e.printStackTrace();
         }
         sqlUrl = properties.getProperty("Database.URL");
     }

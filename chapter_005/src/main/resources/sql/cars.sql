@@ -1,24 +1,24 @@
 create table transmission (
-  id serial primary key,
+  forumID serial primary key,
 	name varchar(20)
 );
 
 create table car_body (
-  id serial primary key,
+  forumID serial primary key,
 	name varchar(20)
 );
 
 create table engine (
-  id serial primary key,
+  forumID serial primary key,
 	name varchar(20)
 );
 
 create table car (
-  id serial primary key,
+  forumID serial primary key,
 	name varchar(20),
-	trans_id integer references transmission(id),
-	body_id integer references car_body (id),
-	engine_id integer references engine (id)
+	trans_id integer references transmission(forumID),
+	body_id integer references car_body (forumID),
+	engine_id integer references engine (forumID)
 );
 
 insert into transmission (name)
@@ -36,8 +36,8 @@ values ('car1', 3, 2, 1), ('car2', 2, 1, 3);
 -- вывести список всех машин и все привязанные к ним детали.
 select * from car;
 -- вывести трансмиссии, которые не используются в машинах
-select t.id, t.name from transmission t left join car c on c.trans_id = t.id where c.id is null;
+select t.forumID, t.name from transmission t left join car c on c.trans_id = t.forumID where c.forumID is null;
 -- вывести кузова, которые не используются в машинах
-select cb.id, cb.name from car c right join car_body cb on c.body_id = cb.id where c.id is null;
+select cb.forumID, cb.name from car c right join car_body cb on c.body_id = cb.forumID where c.forumID is null;
 -- вывести двигатели, которые не используются в машинах
-select en.id, en.name from engine en left join car c on c.engine_id = en.id where c.id is null;
+select en.forumID, en.name from engine en left join car c on c.engine_id = en.forumID where c.forumID is null;
