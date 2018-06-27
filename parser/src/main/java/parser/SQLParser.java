@@ -6,13 +6,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.SchedulerException;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.sql.Connection;
@@ -25,12 +27,12 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Properties;
 
-public class SQLParser {
+public class SQLParser implements Job {
 
     private final static Logger LOG = Logger.getLogger(SQLParser.class);
 
-    private Properties properties = new Properties();
-    private final static String CONFIG_PATH = "config/ParserDBConfig.cfg";
+    private Properties properties;
+    private static File file;
     private final static String FIRST_LAUNCH_KEY = "Launch.firstLaunch";
     private final static String DB_PATH_KEY = "Database.URL";
     private final static String LOGIN_KEY = "Database.user";
@@ -117,29 +119,6 @@ public class SQLParser {
         return Boolean.valueOf(properties.getProperty("Launch.firstLaunch"));
     }
 
-    private void markFirstLaunchAsFalse() {
-        properties.setProperty(FIRST_LAUNCH_KEY, String.valueOf(false));
-        try (OutputStream out = new FileOutputStream(this.getClass().getClassLoader().getResource(CONFIG_PATH).getFile())) {
-            properties.store(out, "Launch flag was changed to 'false'");
-            LOG.info("Properties were changed.");
-        } catch (FileNotFoundException e) {
-            LOG.error(e.getMessage(), e);
-        } catch (IOException e) {
-            LOG.error(e.getMessage(), e);
-        }
-    }
-
-    private void loadProperties() {
-        try (InputStream fis = new FileInputStream(this.getClass().getClassLoader().getResource(CONFIG_PATH).getFile())) {
-            if (fis != null) {
-                properties.load(fis);
-            } else {
-                LOG.error("Cannot load properties.");
-            }
-        } catch (IOException e) {
-            LOG.error(e.getMessage(), e);
-        }
-    }
 
     private void action(Timestamp filterDate, LinkedList<String> pages) {
         for (String s: pages) {
@@ -205,26 +184,52 @@ public class SQLParser {
         return true;
     }
 
-    public static void main(String[] args) {
+    @Override
+    public void execute(JobExecutionContext jobExecutionContext) {
         LOG.info("Parser has just started his dirty job.");
-        SQLParser parser = new SQLParser();
-        parser.loadProperties();
+        try {
+            properties = (Properties) jobExecutionContext.getScheduler().getContext().get("properties");
+            file = (File) jobExecutionContext.getScheduler().getContext().get("file");
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+        if(properties == null){
+            LOG.error("Cannot resume execution, properties are null.");
+            System.exit(0);
+        }
         Date date = new Date(System.currentTimeMillis());
         Timestamp t;
-        if (parser.isFirstLaunch()) {
+        if (isFirstLaunch()) {
             t = new Timestamp(DateUtils.truncate(date, Calendar.YEAR).getTime());
             LOG.info(String.format("First launch, loading all jobs since  %s", t));
-            parser.executeDBScripts("sql/parserDBInit.sql");
-            parser.action(t, parser.getAllPages(parser.getLastPageNumber()));
-            parser.markFirstLaunchAsFalse();
+            executeDBScripts("sql/parserDBInit.sql");
+            action(t, getAllPages(getLastPageNumber()));
+            markFirstLaunchAsFalse(file);
         } else {
             t = new Timestamp(DateUtils.truncate(date, Calendar.DATE).getTime());
             LOG.info(String.format("Regular launch, loading all jobs since today -  %s", t));
-            parser.action(t, parser.getAllPages(parser.getLastPageNumber()));
+            action(t, getAllPages(getLastPageNumber()));
         }
-        if (parser.skippedRaws.size() > 0) {
-            parser.action(t, parser.skippedRaws);
+        if (skippedRaws.size() > 0) {
+            action(t, skippedRaws);
         }
-        parser.saveDataToDatabase(parser.javaRaws);
+        saveDataToDatabase(javaRaws);
+        LOG.info("See you soon space cowboy...");
+    }
+
+    private  void markFirstLaunchAsFalse(File file) {
+        properties.setProperty(FIRST_LAUNCH_KEY, String.valueOf(false));
+        try (OutputStream out = new FileOutputStream(file)) {
+            if (out != null) {
+                properties.store(out, "Launch flag was changed to 'false'");
+                LOG.info("Properties were changed.");
+            } else {
+                LOG.error("Cannot change properties.");
+            }
+        } catch (FileNotFoundException e) {
+            LOG.error(e.getMessage(), e);
+        } catch (IOException e) {
+            LOG.error(e.getMessage(), e);
+        }
     }
 }
