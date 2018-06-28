@@ -24,8 +24,18 @@ public class Main {
     private final static Logger LOG = Logger.getLogger(Main.class);
     private final static String CRON_KEY = "Cron.time";
 
+    /**
+     * Scheduler for SQLParser job. Schedule must be provided into config file under Cron.time key.
+     *
+     * @param args config file should be the first. Other parameters will be ignored.
+     */
     public static void main(String[] args) {
-        file = new File(args[0]);
+        if (args.length != 0) {
+            file = new File(args[0]);
+        } else {
+            LOG.error("Cannot work without config file.");
+            System.exit(0);
+        }
         loadProperties(file);
         SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
 
@@ -38,7 +48,7 @@ public class Main {
             sched.start();
 
             JobDetail jobDetail = newJob(SQLParser.class)
-                    .withIdentity("SQLParser", "group") // name "myJob", group "group1"
+                    .withIdentity("SQLParser", "group")
                     .build();
 
             Trigger trigger = newTrigger()
@@ -53,6 +63,11 @@ public class Main {
         }
     }
 
+    /**
+     * Loads properties from file given when app launched.
+     *
+     * @param path
+     */
     private static void loadProperties(File path) {
         try (InputStream fis = new FileInputStream(path)) {
             if (fis != null) {

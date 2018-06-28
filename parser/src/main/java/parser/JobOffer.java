@@ -50,6 +50,13 @@ public class JobOffer {
         }
     }
 
+    /**
+     * Transforms forum date into TimeStamp object.
+     *
+     * @param dateTime
+     * @return
+     * @throws ParseException
+     */
     private Timestamp transformDate(String dateTime) throws ParseException {
         Timestamp timestamp;
         String[] arr = dateTime.split(",");

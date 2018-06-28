@@ -27,6 +27,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Properties;
 
+/**
+ * This job can be used to parse Java jobs on the sql.ru web site.
+ */
 public class SQLParser implements Job {
 
     private final static Logger LOG = Logger.getLogger(SQLParser.class);
@@ -39,9 +42,17 @@ public class SQLParser implements Job {
     private final static String PASSWORD_KEY = "Database.password";
     private String sqlMainPage = "http://www.sql.ru/forum/job-offers";
     private LinkedList<JobOffer> javaRaws = new LinkedList<>();
-    private LinkedList<String> skippedRaws = new LinkedList<>();
+    private LinkedList<String> skippedPages = new LinkedList<>();
 
 
+    /**
+     * Opens page, gets job offer table raws and adds them to collection as JobOffer objects. If
+     * connection was not stable - page is added into skipped pages collection.
+     *
+     * @param page
+     * @param filterDate
+     * @return
+     */
     private boolean filterPage(String page, Timestamp filterDate) {
         boolean needToGoFurther = true;
         Document doc;
@@ -49,7 +60,7 @@ public class SQLParser implements Job {
             doc = Jsoup.connect(page).get();
         } catch (IOException e) {
             e.printStackTrace();
-            skippedRaws.add(page);
+            skippedPages.add(page);
             LOG.warn(page + "was skipped.");
             return true;
         }
@@ -86,6 +97,11 @@ public class SQLParser implements Job {
         return needToGoFurther;
     }
 
+    /**
+     * Gets last page number.
+     *
+     * @return int
+     */
     private int getLastPageNumber() {
         Document doc = null;
         try {
@@ -99,6 +115,12 @@ public class SQLParser implements Job {
         return lastPage;
     }
 
+    /**
+     * Creates all paths for all pages numbers, because all pages are not availible from html document.
+     *
+     * @param lastPageNumber
+     * @return list of all pages paths.
+     */
     private LinkedList<String> getAllPages(int lastPageNumber) {
         LinkedList<String> list = new LinkedList<>();
         for (int i = 1; i <= lastPageNumber; i++) {
@@ -107,6 +129,9 @@ public class SQLParser implements Job {
         return list;
     }
 
+    /**
+     * Cut offer id from reference for each selected job offer and set as forum id.
+     */
     private void setIDForOffers() {
         for (JobOffer o: javaRaws) {
             String href = o.getHref();
@@ -115,11 +140,21 @@ public class SQLParser implements Job {
         }
     }
 
+    /**
+     * Retuns first launch flag from properties.
+     *
+     * @return
+     */
     private boolean isFirstLaunch() {
         return Boolean.valueOf(properties.getProperty("Launch.firstLaunch"));
     }
 
-
+    /**
+     * Get through all pages and filter them.
+     *
+     * @param filterDate
+     * @param pages
+     */
     private void action(Timestamp filterDate, LinkedList<String> pages) {
         for (String s: pages) {
             LOG.info(s);
@@ -130,6 +165,11 @@ public class SQLParser implements Job {
         this.setIDForOffers();
     }
 
+    /**
+     * Save all found java jobs to local database.
+     *
+     * @param list of found jobs.
+     */
     private void saveDataToDatabase(LinkedList<JobOffer> list) {
         Connection connection = null;
         try (Connection conn = DriverManager.getConnection(String.valueOf(properties.get(DB_PATH_KEY)),
@@ -162,7 +202,12 @@ public class SQLParser implements Job {
         }
     }
 
-
+    /**
+     * Executes sql scripts from resources folder.
+     *
+     * @param fileName
+     * @return
+     */
     private boolean executeDBScripts(String fileName) {
         try (Connection conn = DriverManager.getConnection(String.valueOf(properties.get(DB_PATH_KEY)),
                 String.valueOf(properties.get(LOGIN_KEY)),
@@ -184,6 +229,11 @@ public class SQLParser implements Job {
         return true;
     }
 
+    /**
+     * Main execution of the job.
+     *
+     * @param jobExecutionContext used to get some parameters from scheduler.
+     */
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {
         LOG.info("Parser has just started his dirty job.");
@@ -193,7 +243,7 @@ public class SQLParser implements Job {
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
-        if(properties == null){
+        if (properties == null) {
             LOG.error("Cannot resume execution, properties are null.");
             System.exit(0);
         }
@@ -210,14 +260,19 @@ public class SQLParser implements Job {
             LOG.info(String.format("Regular launch, loading all jobs since today -  %s", t));
             action(t, getAllPages(getLastPageNumber()));
         }
-        if (skippedRaws.size() > 0) {
-            action(t, skippedRaws);
+        if (skippedPages.size() > 0) {
+            action(t, skippedPages);
         }
         saveDataToDatabase(javaRaws);
         LOG.info("See you soon space cowboy...");
     }
 
-    private  void markFirstLaunchAsFalse(File file) {
+    /**
+     * Mark first launch as 'false' and saves parameter back to file.
+     *
+     * @param file - original file that was supplied on the start of application.
+     */
+    private void markFirstLaunchAsFalse(File file) {
         properties.setProperty(FIRST_LAUNCH_KEY, String.valueOf(false));
         try (OutputStream out = new FileOutputStream(file)) {
             if (out != null) {
