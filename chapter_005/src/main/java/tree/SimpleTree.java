@@ -2,12 +2,11 @@ package tree;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Queue;
 
-public class SimpleTree<E extends Comparable<E>> implements Iterable {
+public class SimpleTree<E extends Comparable<E>> implements Iterable<E> {
 
     public SimpleTree(E root) {
         this.root = new Node(root);
@@ -41,22 +40,14 @@ public class SimpleTree<E extends Comparable<E>> implements Iterable {
      * @return
      */
     public boolean add(E parent, E child) {
-        Optional<Node<E>> rsl = findBy(parent);
-        if (!rsl.isPresent()) {
-            this.root.leaves().add(new Node(parent));
+        boolean result = false;
+        Optional<Node<E>> prnt = findBy(parent);
+        Optional<Node<E>> chld = findBy(child);
+        if (prnt.isPresent() && !chld.isPresent()) {
+            prnt.get().leaves().add(new Node(child));
+            result = true;
         }
-        List<Node<E>> list = rsl.get().leaves();
-        boolean hasSuchElement = false;
-        for (Node node : list) {
-            if (node.eqValue(child)) {
-                hasSuchElement = true;
-                break;
-            }
-        }
-        if (!hasSuchElement) {
-            list.add(new Node(child));
-        }
-        return !hasSuchElement;
+        return result;
     }
 
     public Optional<Node<E>> findBy(E value) {
@@ -69,7 +60,7 @@ public class SimpleTree<E extends Comparable<E>> implements Iterable {
                 rsl = Optional.of(el);
                 break;
             }
-            for (Node<E> child : el.leaves()) {
+            for (Node<E> child: el.leaves()) {
                 data.offer(child);
             }
         }
