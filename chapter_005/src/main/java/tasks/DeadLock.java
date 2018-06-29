@@ -1,59 +1,47 @@
 package tasks;
 
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.CountDownLatch;
 
-public class DeadLock {
-    static class Friend {
-        ReentrantLock lock = new ReentrantLock();
-        private final String name;
+public class DeadLock extends Thread {
 
-        public Friend(String name) {
-            this.name = name;
-        }
+    private final CountDownLatch latch;
+    private final Object obj1;
+    private final Object obj2;
 
-        public String getName() {
-            return this.name;
-        }
+    DeadLock(Object obj1, Object obj2, CountDownLatch latch) {
+        this.obj1 = obj1;
+        this.obj2 = obj2;
+        this.latch = latch;
+    }
 
-        public void bow(Friend bower) {
-            lock.lock();
-            System.out.println("Thread locked bow: " + Thread.currentThread().getName());
-            System.out.format("%s: %s"
-                            + "  has bowed to me!%n",
-                    this.name, bower.getName());
-            System.out.println("Thread before bowBack: " + Thread.currentThread().getName());
-            bower.bowBack(this);
-            System.out.println("Thread unlocking bow: " + Thread.currentThread().getName());
-            lock.unlock();
-            System.out.println("Thread unlocked bow: " + Thread.currentThread().getName());
-        }
-
-        public void bowBack(Friend bower) {
-            lock.lock();
-            System.out.println("Thread locked bowBack: " + Thread.currentThread().getName());
-            System.out.format("%s: %s"
-                            + " has bowed back to me!%n",
-                    this.name, bower.getName());
-            System.out.println("Thread unlocking bowBack: " + Thread.currentThread().getName());
-            lock.unlock();
-            System.out.println("Thread unlocked bowBack: " + Thread.currentThread().getName());
+    @Override
+    public void run() {
+        synchronized (obj1) {
+            System.out.println("Object " + obj1 + " locked by thread " + Thread.currentThread().getName());
+            latch.countDown();
+            System.out.println("countdown -1");
+            try {
+                System.out.println("Thread is waiting, obj " + obj1 + " still locked by thread " + Thread.currentThread().getName());
+                latch.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException();
+            }
+            System.out.println("Thread finished waiting " + Thread.currentThread().getName());
+            System.out.println("Before sync 2 section " + Thread.currentThread().getName());
+            synchronized (obj2) {
+                System.out.println("Object " + obj2 + " locked by thread " + Thread.currentThread().getName());
+                System.out.println("Thread finished");
+            }
         }
     }
 
     public static void main(String[] args) {
-        final Friend alphonse =
-                new Friend("Alphonse");
-        final Friend gaston =
-                new Friend("Gaston");
-        new Thread(new Runnable() {
-            public void run() {
-                alphonse.bow(gaston);
-            }
-        }).start();
-        new Thread(new Runnable() {
-            public void run() {
-                gaston.bow(alphonse);
-            }
-        }).start();
+        final Object obj1 = new Object();
+        System.out.println("object1 " + obj1);
+        final Object obj2 = new Object();
+        System.out.println("object2 " + obj2);
+        final CountDownLatch latch = new CountDownLatch(2);
+        new DeadLock(obj1, obj2, latch).start();
+        new DeadLock(obj2, obj1, latch).start();
     }
 }
