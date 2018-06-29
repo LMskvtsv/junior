@@ -1,34 +1,49 @@
 package tasks;
 
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 public class Switcher {
     public static void main(String[] args) {
         Person person = new Person();
-        ReentrantLock lock = new ReentrantLock(true);
+        CyclicBarrier barrier = new CyclicBarrier(2);
         person.appendName(4);
         Thread thread1 = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (!Thread.currentThread().isInterrupted()) {
-                    try {
-                        while (!lock.tryLock()) {
-                            System.out.println("waiting...");
-                        }
-                        for (int i = 0; i < 10; i++) {
-                            System.out.println(person.appendName(1));
-                            Thread.currentThread().sleep(1_000);
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } finally {
-                        lock.unlock();
+                    for (int i = 0; i < 10; i++) {
+                        System.out.println(person.appendName(1));
                         try {
                             Thread.currentThread().sleep(1_000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
+
+                    try {
+                        System.out.println("Thread waiting " + Thread.currentThread().getName());
+                        barrier.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (BrokenBarrierException e) {
+                        e.printStackTrace();
+                    }
+
+                    barrier.reset();
+
+                    System.out.println("Reset barrier");
+                    try {
+                        System.out.println("Thread waiting " + Thread.currentThread().getName());
+                        barrier.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (BrokenBarrierException e) {
+                        e.printStackTrace();
+                    }
+
+                    System.out.println("Thread finished wait " + Thread.currentThread().getName());
+
                 }
             }
         });
@@ -38,26 +53,34 @@ public class Switcher {
             public void run() {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
-
-                        while (!lock.tryLock()) {
-                            System.out.println("waiting...");
-                        }
-                        for (int i = 0; i < 10; i++) {
-                            System.out.println(person.appendName(2));
-                            Thread.currentThread().sleep(1_000);
-                        }
+                        System.out.println("Thread waiting " + Thread.currentThread().getName());
+                        barrier.await();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                    } finally {
-                        lock.unlock();
+                    } catch (BrokenBarrierException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("Thread finished wait " + Thread.currentThread().getName());
+                    for (int i = 0; i < 10; i++) {
+                        System.out.println(person.appendName(2));
                         try {
                             Thread.currentThread().sleep(1_000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
+
+                    try {
+                        System.out.println("Thread waiting " + Thread.currentThread().getName());
+                        barrier.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (BrokenBarrierException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+
         });
 
         thread1.start();
