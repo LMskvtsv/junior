@@ -1,5 +1,7 @@
 package xml;
 
+import org.apache.log4j.Logger;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -9,7 +11,9 @@ import java.util.List;
 
 public class XmlUsage {
 
-    File target;
+    private File target;
+    private static final Logger LOGGER = Logger.getLogger(StoreSQL.class);
+
 
     public XmlUsage(File target) {
         this.target = target;
@@ -56,14 +60,13 @@ public class XmlUsage {
     }
 
     public void save(List<Entry> list) {
-        JAXBContext jaxbContext;
         try {
-            jaxbContext = JAXBContext.newInstance(Entries.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(Entries.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             jaxbMarshaller.marshal(new Entries(list), this.target);
         } catch (JAXBException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
     }
 }

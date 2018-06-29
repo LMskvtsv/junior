@@ -1,5 +1,6 @@
 package xml;
 
+import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 
 public class SAXParser {
 
+    private static final Logger LOGGER = Logger.getLogger(SAXParser.class);
+
     ArrayList<Long> list = new ArrayList<>();
 
     public long parse(File file) {
@@ -21,12 +24,8 @@ public class SAXParser {
         try {
             saxParser = spf.newSAXParser();
             saxParser.parse(file.getAbsolutePath(), new EntryHandler());
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
         }
         return list.stream().mapToLong(Long::longValue).sum();
     }

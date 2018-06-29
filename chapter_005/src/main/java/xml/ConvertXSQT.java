@@ -1,7 +1,8 @@
 package xml;
 
+import org.apache.log4j.Logger;
+
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
@@ -13,23 +14,20 @@ import java.nio.file.Files;
 
 public class ConvertXSQT {
 
+    private static final Logger LOGGER = Logger.getLogger(ConvertXSQT.class);
+
     public File convert(File source, File dest, File scheme) {
         TransformerFactory factory = TransformerFactory.newInstance();
-        Transformer transformer = null;
         try {
-            transformer = factory.newTransformer(
+            Transformer transformer = factory.newTransformer(
                     new StreamSource(
                             new ByteArrayInputStream(Files.readAllBytes(scheme.toPath()))));
 
             transformer.transform(new StreamSource(
                             new ByteArrayInputStream(Files.readAllBytes(source.toPath()))),
                     new StreamResult(dest));
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TransformerException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
         }
         return dest;
     }

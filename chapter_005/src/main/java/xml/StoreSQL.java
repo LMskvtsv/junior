@@ -1,6 +1,8 @@
 package xml;
 
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,12 +17,13 @@ public class StoreSQL {
 
     private String sqlUrl;
     private Properties properties = new Properties();
+    private static final Logger LOGGER = Logger.getLogger(StoreSQL.class);
 
     public StoreSQL(String fileName) {
         try {
             properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName));
         } catch (IOException e) {
-           e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
         sqlUrl = properties.getProperty("Database.URL");
     }
@@ -53,19 +56,18 @@ public class StoreSQL {
                 try {
                     connection.rollback();
                 } catch (SQLException e1) {
-                    e1.printStackTrace();
+                    LOGGER.error(e.getMessage(), e1);
                 }
             }
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
     public List<XmlUsage.Entry> getContentFromDB() {
         LinkedList<XmlUsage.Entry> list = new LinkedList<>();
-        PreparedStatement query;
         try (Connection conn = DriverManager.getConnection(sqlUrl)) {
             if (conn != null) {
-                query = conn.prepareStatement("select id from entry");
+                PreparedStatement query = conn.prepareStatement("select id from entry");
                 ResultSet rs = query.executeQuery();
                 while (rs.next()) {
                     list.add(new XmlUsage.Entry(rs.getInt("id")));
@@ -73,7 +75,7 @@ public class StoreSQL {
             }
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage(), e);
         }
         return list;
     }
