@@ -10,17 +10,11 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.SchedulerException;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,12 +31,7 @@ public class SQLParser implements Job {
     private Properties properties;
     private static File file;
     private final static String FIRST_LAUNCH_KEY = "Launch.firstLaunch";
-    private final static String DB_PATH_KEY = "Database.URL";
-    private final static String LOGIN_KEY = "Database.user";
-    private final static String PASSWORD_KEY = "Database.password";
-    private String sqlMainPage = "http://www.sql.ru/forum/job-offers";
-    private LinkedList<JobOffer> javaRaws = new LinkedList<>();
-    private LinkedList<String> skippedPages = new LinkedList<>();
+    private Storage storage = new Storage();
 
 
     /**
@@ -60,7 +49,7 @@ public class SQLParser implements Job {
             doc = Jsoup.connect(page).get();
         } catch (IOException e) {
             e.printStackTrace();
-            skippedPages.add(page);
+            storage.addSkippedRaws(page);
             LOG.warn(page + "was skipped.");
             return true;
         }
@@ -91,7 +80,7 @@ public class SQLParser implements Job {
                     break;
                 }
                 LOG.info(String.format("Found Java job! Title: %s. Saving...", offer.getTitle()));
-                javaRaws.add(offer);
+                storage.addJavaRaws(offer);
             }
         }
         return needToGoFurther;
@@ -105,7 +94,7 @@ public class SQLParser implements Job {
     private int getLastPageNumber() {
         Document doc = null;
         try {
-            doc = Jsoup.connect(sqlMainPage).timeout(60_000).get();
+            doc = Jsoup.connect(Storage.SQL_MAIN_PAGE).timeout(60_000).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -124,7 +113,7 @@ public class SQLParser implements Job {
     private LinkedList<String> getAllPages(int lastPageNumber) {
         LinkedList<String> list = new LinkedList<>();
         for (int i = 1; i <= lastPageNumber; i++) {
-            list.add(sqlMainPage + "/" + i);
+            list.add(Storage.SQL_MAIN_PAGE + "/" + i);
         }
         return list;
     }
@@ -133,7 +122,7 @@ public class SQLParser implements Job {
      * Cut offer id from reference for each selected job offer and set as forum id.
      */
     private void setIDForOffers() {
-        for (JobOffer o: javaRaws) {
+        for (JobOffer o: storage.getJavaRaws()) {
             String href = o.getHref();
             String[] arr = href.split("/");
             o.setForumID(arr[4]);
@@ -165,69 +154,6 @@ public class SQLParser implements Job {
         this.setIDForOffers();
     }
 
-    /**
-     * Save all found java jobs to local database.
-     *
-     * @param list of found jobs.
-     */
-    private void saveDataToDatabase(LinkedList<JobOffer> list) {
-        Connection connection = null;
-        try (Connection conn = DriverManager.getConnection(String.valueOf(properties.get(DB_PATH_KEY)),
-                String.valueOf(properties.get(LOGIN_KEY)),
-                String.valueOf(properties.get(PASSWORD_KEY)))) {
-            if (conn != null) {
-                connection = conn;
-                conn.setAutoCommit(false);
-                PreparedStatement ps;
-                for (JobOffer offer: list) {
-                    ps = conn.prepareStatement("INSERT INTO job_offers (forum_id, title, href, created) VALUES (?, ?, ?, ?) ON CONFLICT (forum_id) DO NOTHING");
-                    ps.setString(1, offer.getForumID());
-                    ps.setString(2, offer.getTitle());
-                    ps.setString(3, offer.getHref());
-                    ps.setTimestamp(4, offer.getPostDate());
-                    LOG.info(ps.toString());
-                    ps.executeUpdate();
-                }
-                conn.commit();
-            }
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException e1) {
-                    LOG.error(e1.getMessage(), e1);
-                }
-            }
-        }
-    }
-
-    /**
-     * Executes sql scripts from resources folder.
-     *
-     * @param fileName
-     * @return
-     */
-    private boolean executeDBScripts(String fileName) {
-        try (Connection conn = DriverManager.getConnection(String.valueOf(properties.get(DB_PATH_KEY)),
-                String.valueOf(properties.get(LOGIN_KEY)),
-                String.valueOf(properties.get(PASSWORD_KEY)))) {
-            BufferedReader in = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName)));
-            String str;
-            StringBuffer sb = new StringBuffer();
-            while ((str = in.readLine()) != null) {
-                sb.append(str + System.lineSeparator());
-            }
-            in.close();
-            LOG.info(sb.toString());
-            conn.createStatement().executeUpdate(sb.toString());
-        } catch (Exception e) {
-            LOG.error(String.format("Failed to execute %s.", fileName));
-            LOG.error(e.getMessage(), e);
-            return false;
-        }
-        return true;
-    }
 
     /**
      * Main execution of the job.
@@ -247,12 +173,13 @@ public class SQLParser implements Job {
             LOG.error("Cannot resume execution, properties are null.");
             System.exit(0);
         }
+        DataBaseObject dataBaseObject = new DataBaseObject(properties);
         Date date = new Date(System.currentTimeMillis());
         Timestamp t;
         if (isFirstLaunch()) {
             t = new Timestamp(DateUtils.truncate(date, Calendar.YEAR).getTime());
             LOG.info(String.format("First launch, loading all jobs since  %s", t));
-            executeDBScripts("sql/parserDBInit.sql");
+            dataBaseObject.executeDBScripts("sql/parserDBInit.sql");
             action(t, getAllPages(getLastPageNumber()));
             markFirstLaunchAsFalse(file);
         } else {
@@ -260,10 +187,10 @@ public class SQLParser implements Job {
             LOG.info(String.format("Regular launch, loading all jobs since today -  %s", t));
             action(t, getAllPages(getLastPageNumber()));
         }
-        if (skippedPages.size() > 0) {
-            action(t, skippedPages);
+        if (storage.getSkippedPages().size() > 0) {
+            action(t, storage.getSkippedPages());
         }
-        saveDataToDatabase(javaRaws);
+        dataBaseObject.saveDataToDatabase(storage.getJavaRaws());
         LOG.info("See you soon space cowboy...");
     }
 
