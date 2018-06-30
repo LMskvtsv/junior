@@ -1,5 +1,7 @@
 package ru.job4j.tracker;
 
+import org.apache.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,13 +18,15 @@ import java.util.Properties;
 public class Tracker {
 
     private Properties properties = new Properties();
+    private static final Logger LOGGER = Logger.getLogger(Tracker.class);
+
     private static String sqlUrl;
 
     public Tracker(String fileName) {
         try {
             properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
         sqlUrl = properties.getProperty("Database.URL");
         executeDBScripts("init.sql");
@@ -34,9 +38,8 @@ public class Tracker {
      * @param item новая заявка
      */
     public Item add(Item item) {
-        PreparedStatement ps;
         try (Connection conn = DriverManager.getConnection(sqlUrl)) {
-            ps = conn.prepareStatement("INSERT INTO items (name, description, created) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO items (name, description, created) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, item.getName());
             ps.setString(2, item.getDesc());
             ps.setTimestamp(3, item.getCreated());
@@ -46,9 +49,9 @@ public class Tracker {
                 item.setId(rs.getInt("last_insert_rowid()"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
         return item;
     }
@@ -63,9 +66,8 @@ public class Tracker {
      */
     public boolean replace(int id, Item item) {
         boolean result = false;
-        PreparedStatement ps;
         try (Connection conn = DriverManager.getConnection(sqlUrl)) {
-            ps = conn.prepareStatement("UPDATE  items SET name = ?, description = ?, created = ? WHERE id = ?");
+            PreparedStatement ps = conn.prepareStatement("UPDATE  items SET name = ?, description = ?, created = ? WHERE id = ?");
             ps.setString(1, item.getName());
             ps.setString(2, item.getDesc());
             ps.setTimestamp(3, item.getCreated());
@@ -73,9 +75,9 @@ public class Tracker {
             ps.executeUpdate();
             result = true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
 
         return result;
@@ -89,16 +91,15 @@ public class Tracker {
      */
     public boolean delete(int id) {
         boolean result = false;
-        PreparedStatement ps;
         try (Connection conn = DriverManager.getConnection(sqlUrl)) {
-            ps = conn.prepareStatement("DELETE FROM items WHERE id = ?");
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM items WHERE id = ?");
             ps.setInt(1, id);
             ps.executeUpdate();
             result = true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
         return result;
     }
@@ -110,9 +111,8 @@ public class Tracker {
      */
     public ArrayList<Item> findAll() {
         ArrayList<Item> items = new ArrayList<>();
-        PreparedStatement ps;
         try (Connection conn = DriverManager.getConnection(sqlUrl)) {
-            ps = conn.prepareStatement("SELECT * FROM items");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM items");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Item item = new Item(rs.getString("name"), rs.getString("description"));
@@ -122,9 +122,9 @@ public class Tracker {
                 items.add(item);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
         return items;
     }
@@ -138,9 +138,8 @@ public class Tracker {
      */
     public ArrayList<Item> findByName(String key) {
         ArrayList<Item> items = new ArrayList<>();
-        PreparedStatement ps;
         try (Connection conn = DriverManager.getConnection(sqlUrl)) {
-            ps = conn.prepareStatement("SELECT * FROM items WHERE name = ?");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM items WHERE name = ?");
             ps.setString(1, key);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -150,9 +149,9 @@ public class Tracker {
                 items.add(item);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
         return items;
     }
@@ -165,9 +164,8 @@ public class Tracker {
      */
     public Item findById(int id) {
         Item item = null;
-        PreparedStatement ps;
         try (Connection conn = DriverManager.getConnection(sqlUrl)) {
-            ps = conn.prepareStatement("SELECT * FROM items WHERE id = ?");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM items WHERE id = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -176,9 +174,9 @@ public class Tracker {
                 item.setCreated(rs.getTimestamp("created"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
         return item;
     }
@@ -197,9 +195,9 @@ public class Tracker {
             conn.createStatement().executeUpdate(sb.toString());
             isScriptExecuted = true;
         } catch (Exception e) {
-            System.err.println("Failed to Execute" + fileName + ". The error is" + e.getMessage());
-            System.out.println(String.format("Failed to Execute %s", fileName));
-            e.printStackTrace();
+            LOGGER.info("Failed to Execute" + fileName + ". The error is" + e.getMessage());
+            LOGGER.info(String.format("Failed to Execute %s", fileName));
+            LOGGER.error(e.getMessage(), e);
         }
         return isScriptExecuted;
     }
