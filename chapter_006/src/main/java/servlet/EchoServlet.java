@@ -1,4 +1,4 @@
-package job4j.servlets;
+package servlet;
 
 import org.apache.log4j.Logger;
 
