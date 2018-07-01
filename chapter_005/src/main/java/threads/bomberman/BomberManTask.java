@@ -1,7 +1,5 @@
 package threads.bomberman;
 
-import java.util.Queue;
-
 public class BomberManTask implements Runnable {
     BomberMan man;
     Board board;
@@ -14,12 +12,11 @@ public class BomberManTask implements Runnable {
     @Override
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
-            Queue<Cell> moves = board.generateAllPossibleMoves(man.getCurrentCell());
-            Cell newCell = moves.poll();
+            Cell newCell = man.getUserMoves().poll();
             while (!board.move(man.getCurrentCell(), newCell)) {
                 System.out.printf("BomberMan %s thread %s: cell[%d][%d] was locked, choose another one.%s",
                         man.getName(), Thread.currentThread(), newCell.getW(), newCell.getH(), System.lineSeparator());
-                newCell = moves.poll();
+                newCell = man.getUserMoves().poll();
                 System.out.printf("BomberMan %s thread %s: new cell[%d][%d] was chosen.%s",
                         man.getName(), Thread.currentThread(), newCell.getW(), newCell.getH(), System.lineSeparator());
             }

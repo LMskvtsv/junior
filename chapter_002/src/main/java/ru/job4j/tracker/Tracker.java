@@ -15,10 +15,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 
-public class Tracker {
+public class Tracker implements AutoCloseable {
 
     private Properties properties = new Properties();
     private static final Logger LOGGER = Logger.getLogger(Tracker.class);
+    private Connection connection;
 
     private static String sqlUrl;
 
@@ -38,8 +39,9 @@ public class Tracker {
      * @param item новая заявка
      */
     public Item add(Item item) {
-        try (Connection conn = DriverManager.getConnection(sqlUrl)) {
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO items (name, description, created) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+        try {
+            this.connection = DriverManager.getConnection(sqlUrl);
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO items (name, description, created) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, item.getName());
             ps.setString(2, item.getDesc());
             ps.setTimestamp(3, item.getCreated());
@@ -48,11 +50,9 @@ public class Tracker {
             while (rs.next()) {
                 item.setId(rs.getInt("last_insert_rowid()"));
             }
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage(), e);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
         return item;
     }
 
@@ -66,8 +66,9 @@ public class Tracker {
      */
     public boolean replace(int id, Item item) {
         boolean result = false;
-        try (Connection conn = DriverManager.getConnection(sqlUrl)) {
-            PreparedStatement ps = conn.prepareStatement("UPDATE  items SET name = ?, description = ?, created = ? WHERE id = ?");
+        try {
+            connection = DriverManager.getConnection(sqlUrl);
+            PreparedStatement ps = connection.prepareStatement("UPDATE  items SET name = ?, description = ?, created = ? WHERE id = ?");
             ps.setString(1, item.getName());
             ps.setString(2, item.getDesc());
             ps.setTimestamp(3, item.getCreated());
@@ -91,8 +92,9 @@ public class Tracker {
      */
     public boolean delete(int id) {
         boolean result = false;
-        try (Connection conn = DriverManager.getConnection(sqlUrl)) {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM items WHERE id = ?");
+        try {
+            connection = DriverManager.getConnection(sqlUrl);
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM items WHERE id = ?");
             ps.setInt(1, id);
             ps.executeUpdate();
             result = true;
@@ -111,8 +113,9 @@ public class Tracker {
      */
     public ArrayList<Item> findAll() {
         ArrayList<Item> items = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(sqlUrl)) {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM items");
+        try {
+            connection = DriverManager.getConnection(sqlUrl);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM items");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Item item = new Item(rs.getString("name"), rs.getString("description"));
@@ -138,8 +141,9 @@ public class Tracker {
      */
     public ArrayList<Item> findByName(String key) {
         ArrayList<Item> items = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(sqlUrl)) {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM items WHERE name = ?");
+        try {
+            connection = DriverManager.getConnection(sqlUrl);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM items WHERE name = ?");
             ps.setString(1, key);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -164,8 +168,9 @@ public class Tracker {
      */
     public Item findById(int id) {
         Item item = null;
-        try (Connection conn = DriverManager.getConnection(sqlUrl)) {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM items WHERE id = ?");
+        try {
+            connection = DriverManager.getConnection(sqlUrl);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM items WHERE id = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -183,8 +188,8 @@ public class Tracker {
 
     private boolean executeDBScripts(String fileName) {
         boolean isScriptExecuted = false;
-        try (Connection conn = DriverManager.getConnection(sqlUrl)) {
-
+        try {
+            connection = DriverManager.getConnection(sqlUrl);
             BufferedReader in = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName)));
             String str;
             StringBuffer sb = new StringBuffer();
@@ -192,7 +197,7 @@ public class Tracker {
                 sb.append(str + System.lineSeparator());
             }
             in.close();
-            conn.createStatement().executeUpdate(sb.toString());
+            connection.createStatement().executeUpdate(sb.toString());
             isScriptExecuted = true;
         } catch (Exception e) {
             LOGGER.info("Failed to Execute" + fileName + ". The error is" + e.getMessage());
@@ -200,6 +205,11 @@ public class Tracker {
             LOGGER.error(e.getMessage(), e);
         }
         return isScriptExecuted;
+    }
+
+    @Override
+    public void close() throws Exception {
+       this.connection.close();
     }
 }
 

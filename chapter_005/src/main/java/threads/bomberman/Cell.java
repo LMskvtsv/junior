@@ -6,10 +6,16 @@ public class Cell {
 
     private final int w;
     private final int h;
+    private boolean inRock;
 
     public Cell(int w, int h) {
+        this(w, h, true);
+    }
+
+    public Cell(int w, int h, boolean isRock) {
         this.w = w;
         this.h = h;
+        this.inRock = isRock;
     }
 
     public int getW() {

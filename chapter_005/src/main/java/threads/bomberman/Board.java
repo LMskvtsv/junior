@@ -2,8 +2,8 @@ package threads.bomberman;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -13,6 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Board {
 
     private final ReentrantLock[][] board;
+    ArrayList<Cell> rocks = new ArrayList<>();
 
     public Board(int width, int height) {
         this.board = new ReentrantLock[width][height];
@@ -22,9 +23,14 @@ public class Board {
      * Board initialisation with reentrant locks for every cell.
      */
     public void init() {
+        Random random = new Random();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                board[i][j] = new ReentrantLock();
+                if (random.nextBoolean()){
+                    board[i][j] = new ReentrantLock();
+                } else {
+                    rocks.add(new Cell(i, j, true));
+                }
             }
         }
     }
@@ -82,11 +88,16 @@ public class Board {
             if (cell.getW() < 0
                     || cell.getW() >= board.length
                     || cell.getH() < 0
-                    || cell.getH() >= board[0].length) {
+                    || cell.getH() >= board[0].length
+                    || rocks.contains(cell)) {
                 movesToRemove.add(cell);
             }
         }
         possibleMoves.removeAll(movesToRemove);
         return possibleMoves;
+    }
+
+    public ArrayList<Cell> getRocks() {
+        return rocks;
     }
 }

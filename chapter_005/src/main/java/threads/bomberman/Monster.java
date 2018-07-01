@@ -3,7 +3,7 @@ package threads.bomberman;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
-public class BomberMan {
+public class Monster {
     private Cell currentCell;
     private final String name;
     private BlockingQueue<Cell> userMoves  = new LinkedBlockingDeque<>(1);
@@ -12,7 +12,7 @@ public class BomberMan {
         return name;
     }
 
-    public BomberMan(Cell startingCell, String name) {
+    public Monster(Cell startingCell, String name) {
         currentCell = startingCell;
         this.name = name;
     }
@@ -25,11 +25,4 @@ public class BomberMan {
         this.currentCell = currentCell;
     }
 
-    public void moveBomberMan(Cell dest){
-        userMoves.offer(dest);
-    }
-
-    public BlockingQueue<Cell> getUserMoves() {
-        return userMoves;
-    }
 }
