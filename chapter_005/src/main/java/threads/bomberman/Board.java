@@ -26,7 +26,7 @@ public class Board {
         Random random = new Random();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                if (random.nextBoolean()){
+                if (random.nextBoolean()) {
                     board[i][j] = new ReentrantLock();
                 } else {
                     rocks.add(new Cell(i, j, true));
@@ -84,7 +84,7 @@ public class Board {
         possibleMoves.add(new Cell(currentCell.getW() - 1, currentCell.getH()));
         possibleMoves.add(new Cell(currentCell.getW(), currentCell.getH() - 1));
         ArrayList<Cell> movesToRemove = new ArrayList<>();
-        for (Cell cell : possibleMoves) {
+        for (Cell cell: possibleMoves) {
             if (cell.getW() < 0
                     || cell.getW() >= board.length
                     || cell.getH() < 0

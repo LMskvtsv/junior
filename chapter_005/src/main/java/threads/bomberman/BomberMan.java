@@ -6,7 +6,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class BomberMan {
     private Cell currentCell;
     private final String name;
-    private BlockingQueue<Cell> userMoves  = new LinkedBlockingDeque<>(1);
+    private BlockingQueue<Cell> userMoves = new LinkedBlockingDeque<>(1);
 
     public String getName() {
         return name;
@@ -25,7 +25,7 @@ public class BomberMan {
         this.currentCell = currentCell;
     }
 
-    public void moveBomberMan(Cell dest){
+    public void moveBomberMan(Cell dest) {
         userMoves.offer(dest);
     }
 
