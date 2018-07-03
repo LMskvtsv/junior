@@ -14,6 +14,7 @@
         <module>chapter_005</module>
         <module>parser</module>
         <module>chapter_006</module>
+        <module>userCRUD_web_app</module>
     </modules>
 
     <properties>
