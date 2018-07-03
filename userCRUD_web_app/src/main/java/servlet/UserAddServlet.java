@@ -26,8 +26,8 @@ public class UserAddServlet extends HttpServlet {
         PrintWriter writer = response.getWriter();
         User user = new User(request.getParameter("name"), request.getParameter("login"), request.getParameter("email"));
         if (validateService.add(user)) {
-            response.sendRedirect("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()+ "/users/list");
-        } else{
+            response.sendRedirect("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/users/list");
+        } else {
             writer.append(String.format("Error! User %s was not added.", user.toString()));
             writer.flush();
         }
@@ -44,7 +44,7 @@ public class UserAddServlet extends HttpServlet {
         builder.append("<title>Users</title>");
         builder.append("</head>");
         builder.append("<body>");
-        builder.append("<form action='" + request.getContextPath()+"/users/add' method='post'>");
+        builder.append("<form action='" + request.getContextPath() + "/users/add' method='post'>");
         builder.append("Name: <input type='text' name='name'><br>");
         builder.append("Login: <input type='text' name='login'><br>");
         builder.append("E-mail: <input type='text' name='email'><br>");
