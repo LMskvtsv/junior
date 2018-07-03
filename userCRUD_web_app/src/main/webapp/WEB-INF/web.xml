@@ -6,11 +6,29 @@
          version="2.4">
     <servlet>
         <servlet-name>UserServlet</servlet-name>
-        <servlet-class>servlet.UserServlet</servlet-class>
+        <servlet-class>servlet.UserListServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
-        <url-pattern>/users</url-pattern>
+        <url-pattern>/users/list</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>UserAddServlet</servlet-name>
+        <servlet-class>servlet.UserAddServlet</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UserAddServlet</servlet-name>
+        <url-pattern>/users/add</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>UserEditServlet</servlet-name>
+        <servlet-class>servlet.UserEditServlet</servlet-class>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UserEditServlet</servlet-name>
+        <url-pattern>/users/edit</url-pattern>
     </servlet-mapping>
 </web-app>

@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import persistent.MemoryStore;
 import persistent.User;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -91,17 +92,10 @@ public class ValidateService {
     /**
      * Checks if there is any users.
      *
-     * @return users or 'none users exist' message.
+     * @return users.
      */
-    public String findAll() {
-        ConcurrentHashMap<String, User> map = memoryStore.findAll();
-        String result;
-        if (map.size() > 0) {
-            result = map.toString();
-        } else {
-            result = "Users  were not found. You can add one.";
-        }
-        return result;
+    public Map<String, User> findAll() {
+        return memoryStore.findAll();
     }
 
     /**
