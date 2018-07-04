@@ -15,11 +15,15 @@ public class User {
     Timestamp createDate;
 
     public User(String name, String login, String email) {
-        this.id = UUID.randomUUID().toString();
+        this(UUID.randomUUID().toString(), name, login, email, new Timestamp(System.currentTimeMillis()));
+    }
+
+    public User(String id, String name, String login, String email, Timestamp created) {
+        this.id = id;
         this.name = name;
         this.login = login;
         this.email = email;
-        this.createDate = new Timestamp(System.currentTimeMillis());
+        this.createDate = created;
     }
 
     public String getId() {

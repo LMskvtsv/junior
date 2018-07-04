@@ -1,6 +1,7 @@
 package servlet;
 
 import logic.ValidateService;
+import org.apache.log4j.Logger;
 import persistent.User;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import java.io.IOException;
  * POST example: localhost:port/crud/users?action=add&name=ivan&login=puffy
  */
 public class UserAddServlet extends HttpServlet {
+
     private final ValidateService validateService = ValidateService.getSingletonInstance();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

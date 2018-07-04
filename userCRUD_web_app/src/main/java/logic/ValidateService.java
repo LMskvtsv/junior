@@ -1,11 +1,11 @@
 package logic;
 
 import org.apache.log4j.Logger;
-import persistent.MemoryStore;
+import persistent.DBStore;
+import persistent.Store;
 import persistent.User;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Validation layer of the application.
@@ -29,7 +29,7 @@ public class ValidateService {
         return singletonInstance;
     }
 
-    private final MemoryStore memoryStore = MemoryStore.getSingletonInstance();
+    private final Store store = DBStore.getInstance();
 
     /**
      * Checks if user is null or if it is already exists. If so - user will no be added.
@@ -39,9 +39,11 @@ public class ValidateService {
      */
     public boolean add(User user) {
         boolean result = false;
-        if (user != null && memoryStore.findByID(user.getId()) == null) {
-            memoryStore.add(user);
+        if (user != null && store.findByID(user.getId()) == null) {
+            store.add(user);
             result = true;
+        } else {
+            LOGGER.info(String.format("User is null or user with id '%s' already exists.", user.getId()));
         }
         return result;
     }
@@ -69,7 +71,10 @@ public class ValidateService {
             if (email != null) {
                 userToUpdate.setEmail(email);
             }
+            store.update(userToUpdate);
             result = true;
+        } else {
+            LOGGER.info("Id = null or user with id '%s' not found.");
         }
         return result;
     }
@@ -83,8 +88,10 @@ public class ValidateService {
     public boolean delete(String userID) {
         boolean result = false;
         if (userID != null && findByID(userID) != null) {
-            memoryStore.delete(userID);
+            store.delete(userID);
             result = true;
+        } else {
+            LOGGER.info("Id = null or user with id '%s' not found.");
         }
         return result;
     }
@@ -95,7 +102,7 @@ public class ValidateService {
      * @return users.
      */
     public Map<String, User> findAll() {
-        return memoryStore.findAll();
+        return store.findAll();
     }
 
     /**
@@ -105,6 +112,6 @@ public class ValidateService {
      * @return user or null in case user was not found.
      */
     public User findByID(String key) {
-        return memoryStore.findByID(key);
+        return (User) store.findByID(key);
     }
 }
