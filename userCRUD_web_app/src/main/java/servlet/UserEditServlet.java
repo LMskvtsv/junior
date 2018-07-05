@@ -10,41 +10,37 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Servlet for /crud/users page.
- * Supports update operations with Users. After saving data redirects on user/list page.
- * GET example: localhost:port/crud/users/edit
- * POST example: localhost:port/crud/users/edit?id=123jj5j&action=add&name=ivan&login=puffy
+ * Servlet for /crud/edit page.
+ * Supports update operations with Users. After saving data redirects on crud/ page.
+ * GET example: localhost:port/crud/edit
+ * POST example: localhost:port/crud/edit?id=123jj5j&action=add&name=ivan&login=puffy
  */
 public class UserEditServlet extends HttpServlet {
 
     private final ValidateService validateService = ValidateService.getSingletonInstance();
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String name = request.getParameter("name");
         String login = request.getParameter("login");
         String email = request.getParameter("email");
         String id = request.getParameter("id");
         if (validateService.update(id, name, login, email)) {
-            response.sendRedirect(String.format("%s/index.jsp", request.getContextPath()));
+            response.sendRedirect(String.format("%s/", request.getContextPath()));
         } else {
-            response.sendRedirect(String.format("%s/UpdatingError.jsp", request.getContextPath()));
+            request.getRequestDispatcher("/WEB-INF/views/UpdatingError.jsp").forward(request, response);
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         User user = validateService.findByID(request.getParameter("id"));
         if (user != null) {
             request.setAttribute("id", user.getId());
             request.setAttribute("name", user.getName());
             request.setAttribute("login", user.getLogin());
             request.setAttribute("email", user.getEmail());
-            try {
-                getServletContext().getRequestDispatcher("/UserEdit.jsp").forward(request, response);
-            } catch (ServletException e) {
-                e.printStackTrace();
-            }
+            request.getRequestDispatcher("/WEB-INF/views/UserEdit.jsp").forward(request, response);
         } else {
-            response.sendRedirect(String.format("%s/UpdatingError.jsp", request.getContextPath()));
+            request.getRequestDispatcher("/WEB-INF/views/UpdatingError.jsp").forward(request, response);
         }
     }
 }

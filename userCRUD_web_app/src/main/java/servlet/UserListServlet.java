@@ -3,6 +3,7 @@ package servlet;
 import logic.ValidateService;
 import org.apache.log4j.Logger;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,19 +20,20 @@ public class UserListServlet extends HttpServlet {
     private final ValidateService validateService = ValidateService.getSingletonInstance();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect(String.format("%s/index.jsp", request.getContextPath()));
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.setAttribute("users", validateService.findAll());
+        request.getRequestDispatcher("/WEB-INF/views/UsersList.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String action = request.getParameter("action");
         String userID = request.getParameter("id");
         if (new DispatchAction().init().getAction(action).equals(Action.DELETE)) {
             if (validateService.delete(userID)) {
-                response.sendRedirect(String.format("%s/index.jsp", request.getContextPath()));
+                response.sendRedirect(String.format("%s/", request.getContextPath()));
             } else {
-                response.sendRedirect(String.format("%s/DeletingError.jsp", request.getContextPath()));
+                request.getRequestDispatcher("/WEB-INF/views/DeletingError.jsp").forward(request, response);
             }
         }
     }
