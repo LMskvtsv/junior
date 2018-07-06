@@ -9,6 +9,7 @@ public class DispatchAction {
 
     /**
      * Initialization with existing possible values of 'action' tag.
+     *
      * @return
      */
     public DispatchAction init() {
@@ -35,7 +36,7 @@ public class DispatchAction {
      * @return true if access are allowed
      */
     public Action getAction(String actionTag) {
-        for (Function<String, Boolean> predict: this.dispatch.keySet()) {
+        for (Function<String, Boolean> predict : this.dispatch.keySet()) {
             if (predict.apply(actionTag)) {
                 return this.dispatch.get(predict).apply(actionTag);
             }

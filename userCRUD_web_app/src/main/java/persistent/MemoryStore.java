@@ -24,7 +24,8 @@ public class MemoryStore implements Store<String, User> {
 
     /**
      * Adds user into map collection.
-     * @param user  - user to add.
+     *
+     * @param user - user to add.
      */
     @Override
     public void add(User user) {
@@ -34,7 +35,8 @@ public class MemoryStore implements Store<String, User> {
 
     /**
      * Updates user in map collection.
-     * @param user  - user to update.
+     *
+     * @param user - user to update.
      */
     @Override
     public void update(User user) {
@@ -44,7 +46,8 @@ public class MemoryStore implements Store<String, User> {
 
     /**
      * Deletes user from map collection.
-     * @param userID  - user id to delete.
+     *
+     * @param userID - user id to delete.
      */
     @Override
     public void delete(String userID) {
@@ -54,6 +57,7 @@ public class MemoryStore implements Store<String, User> {
 
     /**
      * Returns all users.
+     *
      * @return collection with users.
      */
     @Override
@@ -63,6 +67,7 @@ public class MemoryStore implements Store<String, User> {
 
     /**
      * Find user by user_id.
+     *
      * @param key - user_id.
      * @return user or null.
      */

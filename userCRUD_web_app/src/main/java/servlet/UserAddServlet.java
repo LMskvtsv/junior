@@ -1,6 +1,7 @@
 package servlet;
 
 import logic.ValidateService;
+import persistent.Role;
 import persistent.User;
 
 import javax.servlet.ServletException;
@@ -20,7 +21,11 @@ public class UserAddServlet extends HttpServlet {
     private final ValidateService validateService = ValidateService.getSingletonInstance();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        User user = new User(request.getParameter("name"), request.getParameter("login"), request.getParameter("email"));
+        User user = new User(request.getParameter("name"),
+                request.getParameter("login"),
+                request.getParameter("email"),
+                request.getParameter("password"),
+                new Role(Integer.valueOf(request.getParameter("role_id"))));
         if (validateService.add(user)) {
             response.sendRedirect(String.format("%s/", request.getContextPath()));
         } else {

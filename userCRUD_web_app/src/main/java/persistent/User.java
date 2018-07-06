@@ -8,22 +8,26 @@ import java.util.UUID;
  * User definition.
  */
 public class User {
-    String id;
-    String name;
-    String login;
-    String email;
-    Timestamp createDate;
+    private String id;
+    private String name;
+    private String login;
+    private String email;
+    private Timestamp createDate;
+    private String password;
+    private Role role;
 
-    public User(String name, String login, String email) {
-        this(UUID.randomUUID().toString(), name, login, email, new Timestamp(System.currentTimeMillis()));
+    public User(String name, String login, String email, String password, Role role) {
+        this(UUID.randomUUID().toString(), name, login, password, email, role, new Timestamp(System.currentTimeMillis()));
     }
 
-    public User(String id, String name, String login, String email, Timestamp created) {
+    public User(String id, String name, String login, String password, String email, Role role, Timestamp created) {
         this.id = id;
         this.name = name;
         this.login = login;
+        this.password = password;
         this.email = email;
         this.createDate = created;
+        this.role = role;
     }
 
     public String getId() {
@@ -44,6 +48,18 @@ public class User {
 
     public Timestamp getCreateDate() {
         return createDate;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override

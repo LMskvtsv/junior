@@ -2,10 +2,12 @@ package logic;
 
 import org.apache.log4j.Logger;
 import persistent.DBStore;
+import persistent.Role;
 import persistent.Store;
 import persistent.User;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Validation layer of the application.
@@ -58,7 +60,7 @@ public class ValidateService {
      * @param email - user's new email
      * @return true if user was successfully edited.
      */
-    public boolean update(String key, String name, String login, String email) {
+    public boolean update(String key, String name, String login, String email, String roleID) {
         boolean result = false;
         User userToUpdate = findByID(key);
         if (key != null && userToUpdate != null) {
@@ -70,6 +72,9 @@ public class ValidateService {
             }
             if (email != null) {
                 userToUpdate.setEmail(email);
+            }
+            if (roleID != null) {
+                userToUpdate.setRole(new Role(Integer.valueOf(roleID)));
             }
             store.update(userToUpdate);
             result = true;
@@ -102,7 +107,7 @@ public class ValidateService {
      * @return users.
      */
     public Map<String, User> findAll() {
-        return store.findAll();
+        return new ConcurrentHashMap<>(store.findAll());
     }
 
     /**
@@ -113,5 +118,16 @@ public class ValidateService {
      */
     public User findByID(String key) {
         return (User) store.findByID(key);
+    }
+
+    public User getUserByCredentials(String login, String password) {
+        User user = null;
+        for (Map.Entry<String, User> entry : findAll().entrySet()) {
+            if (entry.getValue().getLogin().equals(login) && entry.getValue().getPassword().equals(password)) {
+                user = entry.getValue();
+                break;
+            }
+        }
+        return user;
     }
 }
