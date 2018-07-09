@@ -17,7 +17,7 @@ import java.io.IOException;
  */
 public class UserListServlet extends HttpServlet {
     private final static Logger LOGGER = Logger.getLogger(UserListServlet.class);
-    private final ValidateService validateService = ValidateService.getSingletonInstance();
+    private final ValidateService validateService = ValidateService.getValidateService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

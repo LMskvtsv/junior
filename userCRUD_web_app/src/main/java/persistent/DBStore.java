@@ -20,7 +20,7 @@ public class DBStore implements Store<String, User> {
     private final static Logger LOGGER = Logger.getLogger(DBStore.class);
 
     private static final BasicDataSource SOURCE = new BasicDataSource();
-    private final static DBStore instance = new DBStore();
+    private final static DBStore DB_STORE = new DBStore();
     private final Properties properties = new Properties();
     private final String configFileName = "db.properties";
 
@@ -53,8 +53,8 @@ public class DBStore implements Store<String, User> {
                 new Timestamp(System.currentTimeMillis())));
     }
 
-    public static DBStore getInstance() {
-        return instance;
+    public static DBStore getDbStore() {
+        return DB_STORE;
     }
 
 

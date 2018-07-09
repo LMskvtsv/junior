@@ -7,7 +7,6 @@ import persistent.Store;
 import persistent.User;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Validation layer of the application.
@@ -16,7 +15,7 @@ public class ValidateService {
 
     private final static Logger LOGGER = Logger.getLogger(ValidateService.class);
 
-    private final static ValidateService singletonInstance =
+    private final static ValidateService VALIDATE_SERVICE =
             new ValidateService();
 
     private ValidateService() {
@@ -27,11 +26,11 @@ public class ValidateService {
      *
      * @return
      */
-    public static ValidateService getSingletonInstance() {
-        return singletonInstance;
+    public static ValidateService getValidateService() {
+        return VALIDATE_SERVICE;
     }
 
-    private final Store store = DBStore.getInstance();
+    private final Store store = DBStore.getDbStore();
 
     /**
      * Checks if user is null or if it is already exists. If so - user will no be added.

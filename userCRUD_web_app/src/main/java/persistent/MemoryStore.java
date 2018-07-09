@@ -12,14 +12,14 @@ public class MemoryStore implements Store<String, User> {
     private final static Logger LOGGER = Logger.getLogger(MemoryStore.class);
     private ConcurrentHashMap<String, User> users = new ConcurrentHashMap<>();
 
-    private static MemoryStore singletonInstance =
+    private final static MemoryStore MEMORY_STORE =
             new MemoryStore();
 
     private MemoryStore() {
     }
 
-    public static MemoryStore getSingletonInstance() {
-        return singletonInstance;
+    public static MemoryStore getMemoryStore() {
+        return MEMORY_STORE;
     }
 
     /**

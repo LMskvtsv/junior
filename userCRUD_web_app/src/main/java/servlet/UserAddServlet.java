@@ -18,7 +18,7 @@ import java.io.IOException;
  */
 public class UserAddServlet extends HttpServlet {
 
-    private final ValidateService validateService = ValidateService.getSingletonInstance();
+    private final ValidateService validateService = ValidateService.getValidateService();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         User user = new User(request.getParameter("name"),

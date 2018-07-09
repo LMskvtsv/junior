@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class SignInServlet extends HttpServlet {
-    private final ValidateService service = ValidateService.getSingletonInstance();
+    private final ValidateService service = ValidateService.getValidateService();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter("login");

@@ -17,7 +17,7 @@ import java.io.IOException;
  */
 public class UserEditServlet extends HttpServlet {
 
-    private final ValidateService validateService = ValidateService.getSingletonInstance();
+    private final ValidateService validateService = ValidateService.getValidateService();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String name = request.getParameter("name");
