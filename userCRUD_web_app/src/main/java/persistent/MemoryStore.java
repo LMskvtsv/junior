@@ -62,7 +62,7 @@ public class MemoryStore implements Store<String, User> {
      */
     @Override
     public ConcurrentHashMap<String, User> findAll() {
-        return users;
+        return new ConcurrentHashMap<>(users);
     }
 
     /**

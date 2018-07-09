@@ -16,7 +16,7 @@ public class ValidateService {
 
     private final static Logger LOGGER = Logger.getLogger(ValidateService.class);
 
-    private static ValidateService singletonInstance =
+    private final static ValidateService singletonInstance =
             new ValidateService();
 
     private ValidateService() {
@@ -107,7 +107,7 @@ public class ValidateService {
      * @return users.
      */
     public Map<String, User> findAll() {
-        return new ConcurrentHashMap<>(store.findAll());
+        return store.findAll();
     }
 
     /**

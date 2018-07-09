@@ -20,8 +20,8 @@ public class DBStore implements Store<String, User> {
     private final static Logger LOGGER = Logger.getLogger(DBStore.class);
 
     private static final BasicDataSource SOURCE = new BasicDataSource();
-    private static DBStore instance = new DBStore();
-    Properties properties = new Properties();
+    private final static DBStore instance = new DBStore();
+    private final Properties properties = new Properties();
     private final String configFileName = "db.properties";
 
     private DBStore() {
