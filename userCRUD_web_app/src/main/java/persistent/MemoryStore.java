@@ -2,6 +2,7 @@ package persistent;
 
 import org.apache.log4j.Logger;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -74,5 +75,17 @@ public class MemoryStore implements Store<String, User> {
     @Override
     public User findByID(String key) {
         return users.get(key);
+    }
+
+    @Override
+    public User findByCredentials(String login, String password) {
+        User user = null;
+        for (Map.Entry<String, User> entry : users.entrySet()) {
+            if (entry.getValue().getLogin().equals(login) && entry.getValue().getPassword().equals(password)) {
+                user = entry.getValue();
+                break;
+            }
+        }
+        return user;
     }
 }

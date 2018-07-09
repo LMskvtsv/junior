@@ -11,12 +11,12 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class SignInServlet extends HttpServlet {
-    private final ValidateService service = ValidateService.getValidateService();
+    private final  ValidateService validateService = ValidateService.getValidateService();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
-        User activeUser = service.getUserByCredentials(login, password);
+        User activeUser = validateService.getUserByCredentials(login, password);
         if (activeUser != null) {
             HttpSession session = request.getSession();
             synchronized (session) {

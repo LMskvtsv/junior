@@ -121,11 +121,8 @@ public class ValidateService {
 
     public User getUserByCredentials(String login, String password) {
         User user = null;
-        for (Map.Entry<String, User> entry : findAll().entrySet()) {
-            if (entry.getValue().getLogin().equals(login) && entry.getValue().getPassword().equals(password)) {
-                user = entry.getValue();
-                break;
-            }
+        if (login != null && password != null) {
+            user = (User) store.findByCredentials(login, password);
         }
         return user;
     }

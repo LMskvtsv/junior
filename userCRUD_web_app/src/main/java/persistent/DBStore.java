@@ -168,6 +168,30 @@ public class DBStore implements Store<String, User> {
         return user;
     }
 
+    @Override
+    public User findByCredentials(String login, String password) {
+        User user = null;
+        try (Connection connection = SOURCE.getConnection()) {
+            PreparedStatement st = connection.prepareStatement("SELECT * FROM users u JOIN roles r on u.role_id = r.id WHERE u.login = ? AND u.password = ?");
+            st.setString(1, login);
+            st.setString(2, password);
+            LOGGER.info(st.toString());
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                user = new User(rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getString("login"),
+                        rs.getString("password"),
+                        rs.getString("email"),
+                        new Role(rs.getInt("role_id")),
+                        rs.getTimestamp("created"));
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        return user;
+    }
+
     /**
      * Executes sql scripts from resources folder.
      *

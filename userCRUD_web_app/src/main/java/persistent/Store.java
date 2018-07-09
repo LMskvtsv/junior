@@ -9,4 +9,5 @@ public interface Store<K, V> {
      void delete(K key);
      Map<K, V> findAll();
      V findByID(K key);
+     V findByCredentials(String login, String password);
 }
