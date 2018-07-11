@@ -5,11 +5,11 @@
          http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
          version="2.4">
     <servlet>
-        <servlet-name>EchoServlet</servlet-name>
-        <servlet-class>servlet.EchoServlet</servlet-class>
+        <servlet-name>JSONServlet</servlet-name>
+        <servlet-class>servlet.JSONServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>EchoServlet</servlet-name>
-        <url-pattern>/echo</url-pattern>
+        <servlet-name>JSONServlet</servlet-name>
+        <url-pattern>/json</url-pattern>
     </servlet-mapping>
 </web-app>

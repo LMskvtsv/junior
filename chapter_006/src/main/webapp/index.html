@@ -8,11 +8,29 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
+        $(
+            $.ajax('./json', {
+                method: 'get',
+                complete: function (data) {
+                    console.log(JSON.parse(data.responseText));
+                    var result = "";
+                    var jsonarray = JSON.parse(data.responseText);
+                    console.table(jsonarray);
+                    for (var i = 0; i < jsonarray.length; i++) {
+                        console.log(jsonarray[i].name);
+                        result += '<tr><td>' + jsonarray[i].name + '</td><td>' + jsonarray[i].surname + '</td><td>' + jsonarray[i].email + '</td><td>' + jsonarray[i].sex + '</td></tr>';
+                    }
+                    result+="</tbody>";
+                    var t = document.getElementById("body-users");
+                    t.innerHTML = result;
+                }
+            })
+        );
+
         function validate() {
             var ids = ["#name", "#surname", "#email", "#pwd", "#desc"];
             var rslt = true;
             for (var i = 0; i < ids.length; i++) {
-                console.log(ids[i]);
                 if ($(ids[i]).val() == '') {
                     alert('Empty ' + $(ids[i]).attr('name'));
                     rslt = false;
@@ -20,7 +38,7 @@
                 }
             }
             if (rslt) {
-                if (!$('[name=optradio]:checked').length) {
+                if (!$('[name=sex]:checked').length) {
                     alert('Empty sex');
                     rslt = false;
                 }
@@ -29,13 +47,23 @@
         }
 
         function addRow() {
-            var name = $('#name').val();
-            var surname = $('#surname').val();
-            var email = $('#email').val();
-            var sex = $('[name=optradio]:checked').val();
-            $('#users tr:last').after('<tr><td>' + name +'</td><td>' + surname + '</td><td>' + email + '</td><td>' + sex + '</td></tr>');
+            if(validate()) {
+                var name_p = $('#name').val();
+                var surname_p = $('#surname').val();
+                var email_p = $('#email').val();
+                var sex_p = $('[name=sex]:checked').val();
+                $.ajax("./json", {
+                    method: "post",
+                    data: {'name': name_p, 'surname': surname_p, 'email': email_p, 'sex': sex_p},
+                    success: function(){
+                        $('#users tr:last').after('<tr><td>' + name_p +'</td><td>' + surname_p + '</td><td>' + email_p + '</td><td>' + sex_p + '</td></tr>');
+                    }
+                });
+                return false;
+            } else {
+                return false;
+            }
         }
-
     </script>
 </head>
 <body>
@@ -68,16 +96,16 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="sex">Sex:</label>
-            <div id="sex" class="col-sm-10">
-            <label class="radio-inline"><input type="radio" name="optradio" value = "M">Male</label>
-            <label class="radio-inline"><input type="radio" name="optradio" value = "F">Female</label>
-            <label class="radio-inline"><input type="radio" name="optradio" value = "O">Other</label>
+            <label class="control-label col-sm-2" for="radio-sex">Sex:</label>
+            <div id="radio-sex" class="col-sm-10">
+                <label class="radio-inline"><input type="radio" name="sex" value="M">Male</label>
+                <label class="radio-inline"><input type="radio" name="sex" value="F">Female</label>
+                <label class="radio-inline"><input type="radio" name="sex" value="O">Other</label>
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2" for="desc">Description:</label>
-            <div  class="col-sm-10">
+            <div class="col-sm-10">
                 <input type="textarea" class="form-control" id="desc" name="desc" placeholder="Enter description">
             </div>
         </div>
@@ -90,46 +118,23 @@
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default" onclick="return validate()">Submit</button>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="button" class="btn btn-default" onclick="return addRow()">Add user</button>
+                <button type="submit" class="btn btn-default" onclick="return addRow()">Add user</button>
             </div>
         </div>
     </form>
 
     <div class="container">
         <h2>Users</h2>
-        <table id="users" class="table table-hover">
+        <table id="users" name="mytable" class="table table-hover">
             <thead>
-            <tr>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>Email</th>
-                <th>Sex</th>
-            </tr>
+                <tr id = "header-users">
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Email</th>
+                    <th>Sex</th>
+                </tr>
             </thead>
-            <tbody>
-            <tr>
-                <td>John</td>
-                <td>Doe</td>
-                <td>john@example.com</td>
-                <td>M</td>
-            </tr>
-            <tr>
-                <td>Mary</td>
-                <td>Moe</td>
-                <td>mary@example.com</td>
-                <td>F</td>
-            </tr>
-            <tr>
-                <td>July</td>
-                <td>Dooley</td>
-                <td>july@example.com</td>
-                <td>F</td>
-            </tr>
+            <tbody id = "body-users">
             </tbody>
         </table>
     </div>
