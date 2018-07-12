@@ -57,4 +57,13 @@
         <servlet-name>UserEditServlet</servlet-name>
         <url-pattern>/edit</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>Countries</servlet-name>
+        <servlet-class>servlet.CountriesServlet</servlet-class>
+        <load-on-startup>6</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Countries</servlet-name>
+        <url-pattern>/countries</url-pattern>
+    </servlet-mapping>
 </web-app>

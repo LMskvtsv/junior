@@ -14,6 +14,8 @@ public class User {
     private String email;
     private Timestamp createDate;
     private String password;
+    private String country;
+    private String city;
     private Role role;
 
     public User(String name, String login, String email, String password, Role role) {
@@ -28,6 +30,22 @@ public class User {
         this.email = email;
         this.createDate = created;
         this.role = role;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getId() {

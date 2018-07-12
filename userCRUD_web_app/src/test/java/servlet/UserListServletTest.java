@@ -41,6 +41,8 @@ public class UserListServletTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         RequestDispatcher requestDispatcher = mock(RequestDispatcher.class);
         User user = new User("ivan", "ivan", "iv@Tyt.ru", "123", new Role(2));
+        user.setCountry("Russia");
+        user.setCity("SBP");
         assertThat(validateService.add(user), is(true));
         when(request.getParameter("action")).thenReturn("delete");
         when(request.getParameter("id")).thenReturn(user.getId());

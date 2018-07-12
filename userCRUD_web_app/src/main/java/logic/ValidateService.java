@@ -1,12 +1,15 @@
 package logic;
 
 import org.apache.log4j.Logger;
+import persistent.Countries;
+import persistent.Country;
 import persistent.DBStore;
 import persistent.Role;
 import persistent.Store;
 import persistent.User;
 
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Validation layer of the application.
@@ -41,10 +44,28 @@ public class ValidateService {
     public boolean add(User user) {
         boolean result = false;
         if (user != null && store.findByID(user.getId()) == null) {
-            store.add(user);
-            result = true;
+            if (validateFields(user)) {
+                store.add(user);
+                result = true;
+            }
         } else {
             LOGGER.info(String.format("User is null or user with id '%s' already exists.", user.getId()));
+        }
+        return result;
+    }
+
+    private boolean validateFields(User user) {
+        boolean result = true;
+        if (user.getPassword() == null
+                || user.getLogin() == null
+                || user.getEmail() == null
+                || user.getName() == null
+                || user.getRole() == null
+                || user.getCity() == null
+                || user.getCountry() == null
+                || user.getId() == null
+                || user.getCreateDate() == null) {
+            result = false;
         }
         return result;
     }
@@ -59,7 +80,7 @@ public class ValidateService {
      * @param email - user's new email
      * @return true if user was successfully edited.
      */
-    public boolean update(String key, String name, String login, String email, String roleID) {
+    public boolean update(String key, String name, String login, String email, String roleID, String country, String city) {
         boolean result = false;
         User userToUpdate = findByID(key);
         if (key != null && userToUpdate != null) {
@@ -74,6 +95,12 @@ public class ValidateService {
             }
             if (roleID != null) {
                 userToUpdate.setRole(new Role(Integer.valueOf(roleID)));
+            }
+            if (country != null) {
+                userToUpdate.setCountry(country);
+            }
+            if (city != null) {
+                userToUpdate.setCity(city);
             }
             store.update(userToUpdate);
             result = true;
@@ -125,5 +152,11 @@ public class ValidateService {
             user = (User) store.findByCredentials(login, password);
         }
         return user;
+    }
+
+    public CopyOnWriteArrayList<Country> getCountries() {
+        Countries countries = new Countries();
+        countries.loadCountries();
+        return countries.getCountries();
     }
 }

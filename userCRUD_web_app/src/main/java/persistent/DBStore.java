@@ -43,14 +43,16 @@ public class DBStore implements Store<String, User> {
         if (!this.executeDBScripts("prepareDB.sql")) {
             LOGGER.error("Initial script was not successful");
         }
-
-        add(new User("1",
+        User root = new User("1",
                 "root",
                 "root",
                 "root",
                 "root@root.ru",
                 new Role(Role.ADMIN_ID),
-                new Timestamp(System.currentTimeMillis())));
+                new Timestamp(System.currentTimeMillis()));
+        root.setCountry("Cyprus");
+        root.setCity("Limassol");
+        add(root);
     }
 
     public static DBStore getDbStore() {
@@ -61,14 +63,16 @@ public class DBStore implements Store<String, User> {
     @Override
     public void add(User value) {
         try (Connection connection = SOURCE.getConnection()) {
-            PreparedStatement st = connection.prepareStatement("INSERT OR REPLACE INTO users (id, name, login, password, email, role_id, created) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement st = connection.prepareStatement("INSERT OR REPLACE INTO users (id, name, login, password, email, role_id, country, city, created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             st.setString(1, value.getId());
             st.setString(2, value.getName());
             st.setString(3, value.getLogin());
             st.setString(4, value.getPassword());
             st.setString(5, value.getEmail());
             st.setInt(6, value.getRole().getId());
-            st.setTimestamp(7, value.getCreateDate());
+            st.setString(7, value.getCountry());
+            st.setString(8, value.getCity());
+            st.setTimestamp(9, value.getCreateDate());
             st.executeUpdate();
             LOGGER.info(st.toString());
         } catch (Exception e) {
@@ -85,12 +89,14 @@ public class DBStore implements Store<String, User> {
     @Override
     public void update(User value) {
         try (Connection connection = SOURCE.getConnection()) {
-            PreparedStatement st = connection.prepareStatement("UPDATE users SET name = ?, login=?, email=?, role_id=? WHERE id = ?");
+            PreparedStatement st = connection.prepareStatement("UPDATE users SET name = ?, login=?, email=?, role_id=?, country=?, city=? WHERE id = ?");
             st.setString(1, value.getName());
             st.setString(2, value.getLogin());
             st.setString(3, value.getEmail());
             st.setInt(4, value.getRole().getId());
-            st.setString(5, value.getId());
+            st.setString(5, value.getCountry());
+            st.setString(6, value.getCity());
+            st.setString(7, value.getId());
             LOGGER.info(st.toString());
             st.executeUpdate();
         } catch (Exception e) {
@@ -136,8 +142,13 @@ public class DBStore implements Store<String, User> {
                 String password = rs.getString("password");
                 String email = rs.getString("email");
                 int roleId = rs.getInt("role_id");
+                String country = rs.getString("country");
+                String city = rs.getString("city");
                 Timestamp created = rs.getTimestamp("created");
-                map.put(id, new User(id, name, login, password, email, new Role(roleId), created));
+                User user = new User(id, name, login, password, email, new Role(roleId), created);
+                user.setCountry(country);
+                user.setCity(city);
+                map.put(id, user);
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
@@ -161,6 +172,8 @@ public class DBStore implements Store<String, User> {
                         rs.getString("email"),
                         new Role(rs.getInt("role_id")),
                         rs.getTimestamp("created"));
+                user.setCountry(rs.getString("country"));
+                user.setCity(rs.getString("city"));
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
@@ -185,6 +198,8 @@ public class DBStore implements Store<String, User> {
                         rs.getString("email"),
                         new Role(rs.getInt("role_id")),
                         rs.getTimestamp("created"));
+                user.setCountry(rs.getString("country"));
+                user.setCity(rs.getString("city"));
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);

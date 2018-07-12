@@ -16,6 +16,8 @@ create table  if not exists users (
 	password text,
 	email text,
 	role_id integer,
+	country text,
+	city text,
 	created timestamp,
 	foreign key(role_id) REFERENCES roles(id)
 );

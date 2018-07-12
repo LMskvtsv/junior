@@ -36,6 +36,8 @@ public class UserAddServletTest {
         when(request.getParameter("email")).thenReturn("test_email");
         when(request.getParameter("password")).thenReturn("test_pass");
         when(request.getParameter("role_id")).thenReturn("2");
+        when(request.getParameter("country")).thenReturn("Russia");
+        when(request.getParameter("city")).thenReturn("SPB");
         when(request.getRequestDispatcher("/WEB-INF/views/AddingError.jsp")).thenReturn(requestDispatcher);
         userAddServlet.doPost(request, response);
         verify(request, times(1)).getParameter("login");

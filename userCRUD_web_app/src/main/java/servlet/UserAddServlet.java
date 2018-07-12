@@ -26,6 +26,8 @@ public class UserAddServlet extends HttpServlet {
                 request.getParameter("email"),
                 request.getParameter("password"),
                 new Role(Integer.valueOf(request.getParameter("role_id"))));
+        user.setCity(request.getParameter("city"));
+        user.setCountry(request.getParameter("country"));
         if (validateService.add(user)) {
             response.sendRedirect(String.format("%s/", request.getContextPath()));
         } else {

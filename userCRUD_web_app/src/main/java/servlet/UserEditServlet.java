@@ -25,7 +25,9 @@ public class UserEditServlet extends HttpServlet {
         String email = request.getParameter("email");
         String id = request.getParameter("id");
         String roleID = request.getParameter("role_id");
-        if (validateService.update(id, name, login, email, roleID)) {
+        String country = request.getParameter("country");
+        String city = request.getParameter("city");
+        if (validateService.update(id, name, login, email, roleID, country, city)) {
             response.sendRedirect(String.format("%s/", request.getContextPath()));
         } else {
             request.getRequestDispatcher("/WEB-INF/views/UpdatingError.jsp").forward(request, response);
@@ -40,6 +42,8 @@ public class UserEditServlet extends HttpServlet {
             request.setAttribute("login", user.getLogin());
             request.setAttribute("email", user.getEmail());
             request.setAttribute("role_id", user.getRole().getId());
+            request.setAttribute("country", user.getCountry());
+            request.setAttribute("city", user.getCity());
             request.getRequestDispatcher("/WEB-INF/views/UserEdit.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("/WEB-INF/views/UpdatingError.jsp").forward(request, response);
