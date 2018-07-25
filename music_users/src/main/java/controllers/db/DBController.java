@@ -4,6 +4,7 @@ import controllers.Controller;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.log4j.Logger;
 
+import javax.servlet.ServletConfig;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -65,4 +66,5 @@ public abstract class DBController<K, V> implements Controller<K, V> {
         }
         return true;
     }
+
 }

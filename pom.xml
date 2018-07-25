@@ -16,6 +16,7 @@
         <module>chapter_006</module>
         <module>userCRUD_web_app</module>
         <module>music_users</module>
+        <module>toDoList</module>
     </modules>
 
     <properties>

@@ -21,6 +21,7 @@ public class JSONServlet extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(JSONServlet.class);
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         User user = new User(request.getParameter("name"),
                 request.getParameter("surname"),
                 request.getParameter("email"),
