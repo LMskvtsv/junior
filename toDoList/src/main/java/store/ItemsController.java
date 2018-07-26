@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -26,7 +27,7 @@ public class ItemsController implements Controller<Item> {
 
     @Override
     public void update(Item entity) {
-      transactionVoid(session -> session.update(entity));
+        transactionVoid(session -> session.update(entity));
     }
 
     private <T> T transaction(final Function<Session, T> command) {
