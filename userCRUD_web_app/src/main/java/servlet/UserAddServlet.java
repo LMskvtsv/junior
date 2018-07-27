@@ -1,6 +1,6 @@
 package servlet;
 
-import logic.ValidateService;
+import dbcontrol.ValidateService;
 import persistent.Role;
 import persistent.User;
 

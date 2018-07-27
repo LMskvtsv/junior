@@ -1,4 +1,4 @@
-package logic;
+package dbcontrol;
 
 import org.apache.log4j.Logger;
 import persistent.Countries;

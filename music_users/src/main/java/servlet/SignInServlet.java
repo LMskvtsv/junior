@@ -1,6 +1,6 @@
 package servlet;
 
-import logic.DataManipulation;
+import dbcontrol.DataManipulation;
 import models.User;
 
 import javax.servlet.ServletException;

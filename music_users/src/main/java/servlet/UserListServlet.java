@@ -1,6 +1,6 @@
 package servlet;
 
-import logic.DataManipulation;
+import dbcontrol.DataManipulation;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;

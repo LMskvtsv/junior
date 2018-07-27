@@ -2,9 +2,7 @@ package servlet;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import logic.ValidateService;
-import persistent.Role;
-import persistent.User;
+import dbcontrol.ValidateService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

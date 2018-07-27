@@ -17,6 +17,7 @@
         <module>userCRUD_web_app</module>
         <module>music_users</module>
         <module>toDoList</module>
+        <module>cars</module>
     </modules>
 
     <properties>

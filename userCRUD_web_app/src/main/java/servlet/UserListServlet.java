@@ -1,6 +1,6 @@
 package servlet;
 
-import logic.ValidateService;
+import dbcontrol.ValidateService;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;

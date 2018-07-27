@@ -1,6 +1,6 @@
 package servlet;
 
-import logic.ValidateService;
+import dbcontrol.ValidateService;
 import persistent.User;
 
 import javax.servlet.ServletException;

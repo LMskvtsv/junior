@@ -1,4 +1,4 @@
-package logic;
+package dbcontrol;
 
 import controllers.Controller;
 import controllers.db.AddressDBController;
