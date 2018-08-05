@@ -1,6 +1,6 @@
 package dbcontrol;
 
-import models.Brand;
+import ru.domain.Brand;
 
 import java.util.List;
 

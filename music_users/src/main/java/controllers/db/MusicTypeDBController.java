@@ -1,6 +1,6 @@
 package controllers.db;
 
-import models.MusicType;
+import ru.domain.MusicType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -28,12 +28,12 @@
         <property name="show_sql">true</property>
 
         <!-- List of XML mapping files -->
-        <mapping resource = "models/User.hbm.xml"/>
-        <mapping resource = "models/Brand.hbm.xml"/>
-        <mapping resource = "models/Transmission.hbm.xml"/>
-        <mapping resource = "models/Body.hbm.xml"/>
-        <mapping resource = "models/Engine.hbm.xml"/>
-        <mapping resource = "models/Car.hbm.xml"/>
+        <mapping resource = "ru.models/User.hbm.xml"/>
+        <mapping resource = "ru.models/Brand.hbm.xml"/>
+        <mapping resource = "ru.models/Transmission.hbm.xml"/>
+        <mapping resource = "ru.models/Body.hbm.xml"/>
+        <mapping resource = "ru.models/Engine.hbm.xml"/>
+        <mapping resource = "ru.models/Car.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>

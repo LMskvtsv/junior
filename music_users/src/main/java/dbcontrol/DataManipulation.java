@@ -5,10 +5,10 @@ import controllers.db.AddressDBController;
 import controllers.db.MusicTypeDBController;
 import controllers.db.RoleDBController;
 import controllers.db.UserDBController;
-import models.Address;
-import models.MusicType;
-import models.Role;
-import models.User;
+import ru.domain.Address;
+import ru.domain.MusicType;
+import ru.domain.Role;
+import ru.domain.User;
 
 import java.util.ArrayList;
 import java.util.Map;

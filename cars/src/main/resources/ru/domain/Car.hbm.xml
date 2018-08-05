@@ -1,0 +1,16 @@
+<hibernate-mapping>
+    <class name = "ru.domain.Car" table = "cars">
+        <id name = "id" column = "id">
+            <generator class = "native"/>
+        </id>
+        <many-to-one name = "brand" column = "brandId" class = "ru.domain.Brand"/>
+        <many-to-one name = "transmission" column = "transmissionId" class = "ru.domain.Transmission"/>
+        <many-to-one name = "body" column = "bodyId" class = "ru.domain.Body"/>
+        <many-to-one name = "engine" column = "engineId" class = "ru.domain.Engine"/>
+        <property name = "price" column = "price"/>
+        <property name = "photoPath" column = "photoPath"/>
+        <property name = "description" column = "description"/>
+        <property name = "sold" column = "isSold"/>
+        <many-to-one name = "user" column = "userId" class = "ru.domain.User"/>
+    </class>
+</hibernate-mapping>

@@ -1,6 +1,6 @@
 package dbcontrol;
 
-import models.Transmission;
+import ru.domain.Transmission;
 
 import java.util.List;
 

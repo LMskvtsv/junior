@@ -1,7 +1,7 @@
 package servlet;
 
 import dbcontrol.DataManipulation;
-import models.User;
+import ru.domain.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

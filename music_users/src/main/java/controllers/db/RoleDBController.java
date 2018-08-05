@@ -1,6 +1,6 @@
 package controllers.db;
 
-import models.Role;
+import ru.domain.Role;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

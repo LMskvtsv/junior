@@ -1,6 +1,6 @@
 package store;
 
-import models.Item;
+import ru.domain.Item;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

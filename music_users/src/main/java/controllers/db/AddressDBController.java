@@ -1,6 +1,6 @@
 package controllers.db;
 
-import models.Address;
+import ru.domain.Address;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

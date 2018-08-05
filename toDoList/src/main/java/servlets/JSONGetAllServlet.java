@@ -2,8 +2,8 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import models.Item;
-import validation.Validation;
+import ru.domain.Item;
+import ru.service.validation.Validation;
 
 
 import javax.servlet.ServletException;

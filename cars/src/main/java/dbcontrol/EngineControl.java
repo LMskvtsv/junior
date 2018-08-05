@@ -1,6 +1,6 @@
 package dbcontrol;
 
-import models.Engine;
+import ru.domain.Engine;
 
 import java.util.List;
 

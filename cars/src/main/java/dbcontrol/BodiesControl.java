@@ -1,6 +1,6 @@
 package dbcontrol;
 
-import models.Body;
+import ru.domain.Body;
 
 import java.util.List;
 

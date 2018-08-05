@@ -1,6 +1,6 @@
 package dbcontrol;
 
-import models.Car;
+import ru.domain.Car;
 import org.hibernate.Hibernate;
 
 import java.util.List;
@@ -22,6 +22,7 @@ public class CarControl extends AbstractController implements Controller<Car> {
             return list;
         });
     }
+
 
     @Override
     public Car create(Car car) {
